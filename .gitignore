@@ -1,0 +1,14 @@
+# Local environment and generated files
+.env
+.venv/
+__pycache__/
+*.py[cod]
+
+# Local OpenCode/ATL runtime artifacts with machine-specific paths
+.atl/
+
+# Runtime data
+grafana/data/
+influxdb/data/
+mosquitto/data/
+mosquitto/log/
