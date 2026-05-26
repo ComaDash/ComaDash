@@ -1,0 +1,21 @@
+Un simulador. Este simulador ustedes lo pueden trabajar justamente con estos mismos sets de datos, y se encargan de generar sus parámetros enviándolos directo al broker.
+
+Con eso ustedes pueden testear su arquitectura al tiro. Generan una máquina, o más bien un archivo en Python, que se encarga de transmitir todo a la máxima velocidad posible. No sé cuántos datos eran, pero si no, lo dejan en uno más que repita el mismo archivo. Esa no es la parte importante.
+
+La parte importante es que el flujo esté completo y no venga a hacer el flujo cuando ya tiene claro que ese flujo funciona. Ahí está listo.
+
+Los dashboards, recuerden, van a tener que generar un dashboard justamente para cosas operativas, como bien mencionaron, que podrían ser el funcionamiento de las máquinas, las maquinarias o los elementos operativos.
+
+Y otro dashboard que sea para el funcionamiento financiero.
+
+Eso sí lo van a tener que hacer. Lo más probable es que vayan a tener que agregar una tercera capa, que sea como algún tipo de consulta integrada. Por ejemplo, que ustedes digan: la máquina 1 rinde tanto y gasta tanto. De esa manera, ustedes pueden decir: esta máquina está rindiendo tanto, está funcionando según el flujo, perfecto; está rindiendo lo que tiene que rendir, y listo.
+
+También se menciona algo sobre el funcionamiento base de las máquinas. Eso lo tiene que tener el sistema. Está midiendo todo lo medible; tiene que estar midiendo el sistema.
+
+Pero eso mide, no hace más que reaccionar. Todos los sistemas de alertas son reactivos. No hay ningún sistema predictivo.
+
+Ustedes, que tienen los datos acá, pueden pasarlos justamente a una máquina que se encargue de ingresar el análisis predictivo directo al mismo Grafana.
+
+Sí, pues, tienen la alerta en Grafana, y Grafana tiene el trayecto de la alerta.
+
+Vamos súper bien, súper baratísimo, vamos a ganar. Vamos a tener la gloria de vuelta.
