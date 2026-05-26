@@ -52,16 +52,114 @@ function Get-InfluxDataRows {
     )
 }
 
+function Split-CsvLine {
+    param([string]$Line)
+
+    $fields = New-Object System.Collections.Generic.List[string]
+    $current = New-Object System.Text.StringBuilder
+    $inQuotes = $false
+
+    for ($i = 0; $i -lt $Line.Length; $i++) {
+        $char = $Line[$i]
+
+        if ($char -eq '"') {
+            if ($inQuotes -and ($i + 1) -lt $Line.Length -and $Line[$i + 1] -eq '"') {
+                [void]$current.Append('"')
+                $i++
+                continue
+            }
+
+            $inQuotes = -not $inQuotes
+            continue
+        }
+
+        if ($char -eq ',' -and -not $inQuotes) {
+            $fields.Add($current.ToString()) | Out-Null
+            [void]$current.Clear()
+            continue
+        }
+
+        [void]$current.Append($char)
+    }
+
+    $fields.Add($current.ToString()) | Out-Null
+    return @($fields.ToArray())
+}
+
+function ConvertFrom-InfluxAnnotatedCsv {
+    param([string]$Csv)
+
+    $headers = $null
+    $records = @()
+
+    foreach ($line in ($Csv -split "`r?`n")) {
+        if ([string]::IsNullOrWhiteSpace($line) -or $line.StartsWith("#")) {
+            continue
+        }
+
+        $fields = @(Split-CsvLine -Line $line)
+        if ($fields.Count -eq 0) {
+            continue
+        }
+
+        if ($fields -contains "result" -and $fields -contains "table" -and $fields -contains "_value") {
+            $headers = @($fields)
+            continue
+        }
+
+        if ($null -eq $headers) {
+            continue
+        }
+
+        $record = [ordered]@{}
+        for ($i = 0; $i -lt $headers.Count; $i++) {
+            $name = $headers[$i]
+            if ([string]::IsNullOrWhiteSpace($name)) {
+                $name = "_annotation"
+            }
+            elseif ($record.Contains($name)) {
+                $name = "{0}_{1}" -f $name, $i
+            }
+
+            $value = $null
+            if ($i -lt $fields.Count) {
+                $value = $fields[$i]
+            }
+
+            $record[$name] = $value
+        }
+
+        $records += [pscustomobject]$record
+    }
+
+    return $records
+}
+
+function Get-InfluxColumnValues {
+    param(
+        [string]$Csv,
+        [string]$ColumnName = "_value"
+    )
+
+    $records = ConvertFrom-InfluxAnnotatedCsv -Csv $Csv
+    return @(
+        foreach ($record in $records) {
+            if ($record.PSObject.Properties.Name -contains $ColumnName) {
+                $record.$ColumnName
+            }
+        }
+    )
+}
+
 function Get-InfluxLastNumericValue {
     param([string]$Csv)
 
-    $rows = Get-InfluxDataRows -Csv $Csv
-    if ($rows.Count -eq 0) {
+    $values = @(Get-InfluxColumnValues -Csv $Csv -ColumnName "_value")
+    if ($values.Count -eq 0) {
         return 0
     }
 
-    $lastRow = $rows[-1]
-    $lastValue = ($lastRow -split ",")[-1]
+    $lastValue = $values[-1]
     try {
         return [double]::Parse($lastValue, [Globalization.CultureInfo]::InvariantCulture)
     }
@@ -86,8 +184,7 @@ import "influxdata/influxdb/schema"
 schema.measurements(bucket: "$InfluxBucket")
 "@
 $measurementCsv = Invoke-InfluxQuery -Flux $measurementListFlux
-$measurementRows = Get-InfluxDataRows -Csv $measurementCsv
-$availableMeasurements = @($measurementRows | ForEach-Object { ($_ -split ",")[-1].Trim('"') })
+$availableMeasurements = Get-InfluxColumnValues -Csv $measurementCsv -ColumnName "_value"
 
 foreach ($measurement in $Measurements) {
     if ($availableMeasurements -notcontains $measurement) {
@@ -105,6 +202,7 @@ from(bucket: "$InfluxBucket")
   |> group()
   |> count(column: "_value")
   |> keep(columns: ["_value"])
+  |> yield(name: "count")
 "@
     $countCsv = Invoke-InfluxQuery -Flux $countFlux
     $count = Get-InfluxLastNumericValue -Csv $countCsv
