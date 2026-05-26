@@ -28,8 +28,10 @@ class AnalyticsConsumer:
         client.loop_forever()
 
     def on_connect(self, client: mqtt.Client, _userdata, _flags, reason_code, _properties=None) -> None:
-        if int(reason_code) == 0:
+        if _is_success_reason_code(reason_code):
             client.subscribe("COMASA/#", qos=0)
+        else:
+            print(f"analytics MQTT connect failed: {reason_code}", flush=True)
 
     def on_message(self, _client: mqtt.Client, _userdata, msg: mqtt.MQTTMessage) -> None:
         try:
@@ -53,3 +55,11 @@ class AnalyticsConsumer:
             return False
         self.last_emitted[anomaly_type] = now
         return True
+
+
+def _is_success_reason_code(reason_code) -> bool:
+    value = getattr(reason_code, "value", reason_code)
+    try:
+        return int(value) == 0
+    except (TypeError, ValueError):
+        return str(reason_code).lower() == "success"

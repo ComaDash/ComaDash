@@ -46,3 +46,5 @@ docker compose exec influxdb influx query 'from(bucket:"comasa") |> range(start:
 ```
 
 See `docs/demo.md` for the pitch/runbook.
+
+Grafana auto-loads four dashboards under the `COMASA` folder: master, operator, maintenance, and jefatura/finance views. They query `telemetry_raw`, `anomaly_event`, `maintenance_recommendation`, and `kpi` from InfluxDB.

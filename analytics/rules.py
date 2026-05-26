@@ -62,7 +62,7 @@ def evaluate(store: WindowStore) -> list[dict]:
             f"Vapor={steam:.1f} ton/h con condensado FT_3001={condensate:.1f} ton/h",
             "vapor_mwh,condensado_recuperado,costo_operacional",
         ))
-    if vibration > 3.4 or fft_score > 18:
+    if vibration > 3.4 or (vibration > 3.0 and fft_score > 30):
         found.append(anomaly(
             "desbalance_turbina",
             "critical" if vibration > 4.3 else "warning",
