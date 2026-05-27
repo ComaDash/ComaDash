@@ -7,6 +7,7 @@ import paho.mqtt.client as mqtt
 from influx_writer import InfluxWriter
 from kpis import current_kpis
 from recommendations import build
+from risk import current_asset_risk
 from rules import evaluate
 from window_store import WindowStore
 
@@ -40,6 +41,7 @@ class AnalyticsConsumer:
                 return
             self.store.add(point)
             self.writer.write_kpis(current_kpis(self.store))
+            self.writer.write_asset_risk(current_asset_risk(self.store))
             for anomaly in evaluate(self.store):
                 if self._should_emit(anomaly["type"]):
                     self.writer.write_anomaly(anomaly)

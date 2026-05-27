@@ -23,7 +23,7 @@ Edit `.env` and set `SIM_SCENARIO`, then restart the simulator:
 SIM_SCENARIO=fouling_caldera docker compose up -d --force-recreate simulator
 ```
 
-Supported scenarios: `normal`, `fouling_caldera`, `humedad_biomasa_alta`, `perdida_vapor_condensado`, `desbalance_turbina`.
+Supported scenarios: `normal`, `fouling_caldera`, `humedad_biomasa_alta`, `perdida_vapor_condensado`, `desbalance_turbina`, `cavitacion_bomba`, `combustion_inestable`.
 
 ## Inspect data
 
@@ -42,9 +42,9 @@ docker compose exec influxdb influx query 'from(bucket:"comasa") |> range(start:
 Derived analytics example:
 
 ```bash
-docker compose exec influxdb influx query 'from(bucket:"comasa") |> range(start:-10m) |> filter(fn:(r)=>r._measurement=="anomaly_event" or r._measurement=="maintenance_recommendation" or r._measurement=="kpi")' --org comasa --token comasa-demo-token
+docker compose exec influxdb influx query 'from(bucket:"comasa") |> range(start:-10m) |> filter(fn:(r)=>r._measurement=="anomaly_event" or r._measurement=="maintenance_recommendation" or r._measurement=="asset_risk" or r._measurement=="kpi")' --org comasa --token comasa-demo-token
 ```
 
 See `docs/demo.md` for the pitch/runbook.
 
-Grafana auto-loads four dashboards under the `COMASA` folder: master, operator, maintenance, and jefatura/finance views. They query `telemetry_raw`, `anomaly_event`, `maintenance_recommendation`, and `kpi` from InfluxDB.
+Grafana auto-loads six dashboards under the `COMASA` folder: decision center, operator, maintenance/risk, boiler/biomass, water/steam/condensate, and executive/finance views. They query `telemetry_raw`, `asset_risk`, `anomaly_event`, `maintenance_recommendation`, and `kpi` from InfluxDB.

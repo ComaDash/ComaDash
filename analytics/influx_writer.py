@@ -57,6 +57,26 @@ class InfluxWriter:
         if points:
             self.api.write(bucket=self.bucket, org=self.org, record=points)
 
+    def write_asset_risk(self, risks: list[dict]) -> None:
+        points = [
+            Point("asset_risk")
+            .tag("equipment", item["equipment"])
+            .tag("area", item["area"])
+            .tag("status", item["status"])
+            .tag("severity", item["severity"])
+            .tag("probable_anomaly", item["probable_anomaly"])
+            .field("risk_score", float(item["risk_score"]))
+            .field("dominant_signal", item["dominant_signal"])
+            .field("risk_reason", item["risk_reason"])
+            .field("suggested_action", item["suggested_action"])
+            .field("expected_impact", item["expected_impact"])
+            .field("due_minutes", float(item["due_minutes"]))
+            .time(_now(), WritePrecision.NS)
+            for item in risks
+        ]
+        if points:
+            self.api.write(bucket=self.bucket, org=self.org, record=points)
+
 
 def _now() -> datetime:
     return datetime.now(timezone.utc)
