@@ -77,6 +77,43 @@ class InfluxWriter:
         if points:
             self.api.write(bucket=self.bucket, org=self.org, record=points)
 
+    def write_segment_status(self, statuses: list[dict]) -> None:
+        tag_keys = (
+            "segment_id",
+            "from_node",
+            "to_node",
+            "fluid",
+            "unit_generator",
+            "operating_condition",
+            "variable",
+            "tag",
+            "unit",
+            "source",
+            "source_sheet",
+            "stage",
+            "quality",
+            "status",
+            "impacted_problem",
+        )
+        points = []
+        for item in statuses:
+            point = Point("segment_status")
+            for key in tag_keys:
+                point = point.tag(key, str(item.get(key, "")))
+            point = (
+                point.field("risk_score", float(item["risk_score"]))
+                .field("reason", item["reason"])
+                .field("recommendation_cause", item["recommendation_cause"])
+                .field("recommendation_link", item["recommendation_link"])
+                .field("cost_efficiency_impact", item["cost_efficiency_impact"])
+                .field("value", float(item["value"]))
+                .field("confidence", float(item["confidence"]))
+                .time(_now(), WritePrecision.NS)
+            )
+            points.append(point)
+        if points:
+            self.api.write(bucket=self.bucket, org=self.org, record=points)
+
 
 def _now() -> datetime:
     return datetime.now(timezone.utc)

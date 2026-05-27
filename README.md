@@ -42,9 +42,11 @@ docker compose exec influxdb influx query 'from(bucket:"comasa") |> range(start:
 Derived analytics example:
 
 ```bash
-docker compose exec influxdb influx query 'from(bucket:"comasa") |> range(start:-10m) |> filter(fn:(r)=>r._measurement=="anomaly_event" or r._measurement=="maintenance_recommendation" or r._measurement=="asset_risk" or r._measurement=="kpi")' --org comasa --token comasa-demo-token
+docker compose exec influxdb influx query 'from(bucket:"comasa") |> range(start:-10m) |> filter(fn:(r)=>r._measurement=="anomaly_event" or r._measurement=="maintenance_recommendation" or r._measurement=="asset_risk" or r._measurement=="kpi" or r._measurement=="segment_status")' --org comasa --token comasa-demo-token
 ```
+
+For the `perdida_vapor_condensado` demo, open `COMASA - Revision integrada por problema` and read the first row of the segment ranking. It identifies the critical water/steam/condensate tramo with endpoint nodes, TAG, quality, risk reason, recommended action, and cost/efficiency impact.
 
 See `docs/demo.md` for the pitch/runbook.
 
-Grafana auto-loads six dashboards under the `COMASA` folder: decision center, operator, maintenance/risk, boiler/biomass, water/steam/condensate, and executive/finance views. They query `telemetry_raw`, `asset_risk`, `anomaly_event`, `maintenance_recommendation`, and `kpi` from InfluxDB.
+Grafana auto-loads the dashboards under the `COMASA` folder: decision center, operator, maintenance/risk, boiler/biomass, water/steam/condensate, executive/finance, and the additive problem-first integrated review. They query `telemetry_raw`, `segment_status`, `asset_risk`, `anomaly_event`, `maintenance_recommendation`, and `kpi` from InfluxDB.

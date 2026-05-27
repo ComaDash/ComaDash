@@ -9,6 +9,7 @@ from kpis import current_kpis
 from recommendations import build
 from risk import current_asset_risk
 from rules import evaluate
+from segment_status import current_segment_status
 from window_store import WindowStore
 
 
@@ -42,6 +43,7 @@ class AnalyticsConsumer:
             self.store.add(point)
             self.writer.write_kpis(current_kpis(self.store))
             self.writer.write_asset_risk(current_asset_risk(self.store))
+            self.writer.write_segment_status(current_segment_status(self.store))
             for anomaly in evaluate(self.store):
                 if self._should_emit(anomaly["type"]):
                     self.writer.write_anomaly(anomaly)

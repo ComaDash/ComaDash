@@ -17,7 +17,7 @@ def value_for(signal: Signal, scenario: str, tick: int) -> float:
 
 
 def payload(signal: Signal, scenario: str, tick: int) -> dict:
-    return {
+    data = {
         "timestamp": utc_now(),
         "site": "Lautaro",
         "plant": "Planta1",
@@ -28,6 +28,21 @@ def payload(signal: Signal, scenario: str, tick: int) -> dict:
         "value": value_for(signal, scenario, tick),
         "unit": signal.unit,
         "quality": "GOOD",
-        "source": "digital-twin",
+        "source": signal.source,
         "scenario": scenario,
     }
+
+    for field in (
+        "from_node",
+        "to_node",
+        "fluid",
+        "unit_generator",
+        "operating_condition",
+        "source_sheet",
+        "stage",
+    ):
+        value = getattr(signal, field)
+        if value:
+            data[field] = value
+
+    return data
