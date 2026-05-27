@@ -337,7 +337,7 @@
                                    },
                        "targets":  [
                                        {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -12h) |\u003e filter(fn: (r) =\u003e r._measurement == \"maintenance_recommendation\") |\u003e pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e keep(columns: [\"_time\", \"equipment\", \"severity\", \"suggested_action\", \"due_minutes\", \"expected_impact\", \"ack_status\"]) |\u003e sort(columns: [\"due_minutes\"])",
+                                            "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -12h) |\u003e filter(fn: (r) =\u003e r._measurement == \"maintenance_recommendation\") |\u003e pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e keep(columns: [\"_time\", \"equipment\", \"severity\", \"probable_cause\", \"suggested_action\", \"expected_impact\", \"due_minutes\", \"ack_status\"]) |\u003e sort(columns: [\"due_minutes\"])",
                                            "refId":  "A"
                                        }
                                    ],

@@ -42,9 +42,67 @@
                                                                            "inspect":  false
                                                                        }
                                                         },
-                                           "overrides":  [
-
-                                                         ]
+                                            "overrides":  [
+                                                              {
+                                                                  "matcher":  {
+                                                                                  "id":  "byName",
+                                                                                  "options":  "risk_score"
+                                                                              },
+                                                                  "properties":  [
+                                                                                     {
+                                                                                         "id":  "unit",
+                                                                                         "value":  "percent"
+                                                                                     },
+                                                                                     {
+                                                                                         "id":  "decimals",
+                                                                                         "value":  0
+                                                                                     },
+                                                                                     {
+                                                                                         "id":  "custom.cellOptions",
+                                                                                         "value":  {
+                                                                                                       "mode":  "gradient",
+                                                                                                       "type":  "color-background"
+                                                                                                   }
+                                                                                     },
+                                                                                     {
+                                                                                         "id":  "thresholds",
+                                                                                         "value":  {
+                                                                                                       "mode":  "absolute",
+                                                                                                       "steps":  [
+                                                                                                                     {
+                                                                                                                         "color":  "green",
+                                                                                                                         "value":  null
+                                                                                                                     },
+                                                                                                                     {
+                                                                                                                         "color":  "orange",
+                                                                                                                         "value":  60
+                                                                                                                     },
+                                                                                                                     {
+                                                                                                                         "color":  "red",
+                                                                                                                         "value":  80
+                                                                                                                     }
+                                                                                                                 ]
+                                                                                                   }
+                                                                                     }
+                                                                                 ]
+                                                              },
+                                                              {
+                                                                  "matcher":  {
+                                                                                  "id":  "byName",
+                                                                                  "options":  "confidence"
+                                                                              },
+                                                                  "properties":  [
+                                                                                     {
+                                                                                         "id":  "unit",
+                                                                                         "value":  "percent"
+                                                                                     },
+                                                                                     {
+                                                                                         "id":  "decimals",
+                                                                                         "value":  0
+                                                                                     }
+                                                                                 ]
+                                                              }
+                                                          ]
                                        },
                        "gridPos":  {
                                        "h":  8,
@@ -59,11 +117,46 @@
                                    },
                        "targets":  [
                                        {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -10m) |\u003e filter(fn: (r) =\u003e r._measurement == \"segment_status\") |\u003e pivot(rowKey: [\"_time\", \"segment_id\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"unit\", \"quality\", \"status\", \"impacted_problem\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e sort(columns: [\"_time\"], desc: true) |\u003e unique(column: \"segment_id\") |\u003e group() |\u003e keep(columns: [\"status\", \"risk_score\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"value\", \"unit\", \"quality\", \"reason\", \"recommendation_link\", \"cost_efficiency_impact\"]) |\u003e sort(columns: [\"risk_score\"], desc: true)",
+                                            "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -10m) |\u003e filter(fn: (r) =\u003e r._measurement == \"segment_status\") |\u003e pivot(rowKey: [\"_time\", \"segment_id\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"unit\", \"quality\", \"status\", \"impacted_problem\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e sort(columns: [\"_time\"], desc: true) |\u003e unique(column: \"segment_id\") |\u003e group() |\u003e keep(columns: [\"risk_score\", \"status\", \"reason\", \"recommendation_link\", \"cost_efficiency_impact\", \"quality\", \"confidence\", \"tag\", \"unit\", \"from_node\", \"to_node\", \"fluid\"]) |\u003e sort(columns: [\"risk_score\"], desc: true)",
                                            "refId":  "A"
                                        }
                                    ],
-                       "title":  "Ranking de tramos con razón, calidad y acción",
+                        "transformations":  [
+                                                {
+                                                    "id":  "organize",
+                                                    "options":  {
+                                                                    "indexByName":  {
+                                                                                        "risk_score":  0,
+                                                                                        "status":  1,
+                                                                                        "reason":  2,
+                                                                                        "recommendation_link":  3,
+                                                                                        "cost_efficiency_impact":  4,
+                                                                                        "quality":  5,
+                                                                                        "confidence":  6,
+                                                                                        "tag":  7,
+                                                                                        "unit":  8,
+                                                                                        "from_node":  9,
+                                                                                        "to_node":  10,
+                                                                                        "fluid":  11
+                                                                                    },
+                                                                    "renameByName":  {
+                                                                                         "risk_score":  "Riesgo",
+                                                                                         "status":  "Estado",
+                                                                                         "reason":  "Causa",
+                                                                                         "recommendation_link":  "Acción",
+                                                                                         "cost_efficiency_impact":  "Impacto",
+                                                                                         "quality":  "Calidad",
+                                                                                         "confidence":  "Confianza",
+                                                                                         "tag":  "TAG",
+                                                                                         "unit":  "Unidad",
+                                                                                         "from_node":  "Desde",
+                                                                                         "to_node":  "Hasta",
+                                                                                         "fluid":  "Fluido"
+                                                                                     }
+                                                                }
+                                                }
+                                            ],
+                        "title":  "Ranking de tramos con razón, calidad y acción",
                        "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre ranking de tramos con razon calidad y accion.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: segment_status; status, risk_score, reason, quality, tag, unit y cost_efficiency_impact.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "table"
                    },
@@ -301,8 +394,9 @@
                                            "refId":  "A"
                                        }
                                    ],
-                       "title":  "Señal térmica y confianza de datos",
-                       "type":  "table"
+                        "title":  "Señal térmica y confianza de datos",
+                        "description":  "Goal: priorizar tramos asociados a degradacion termica con evidencia de calidad y confianza.\nQuestion: Que señal termica del circuito de agua requiere revision primero?\nMetric: segment_status filtrado por well_water_thermal_degradation; risk_score, quality, confidence, reason y recommendation_cause.\nDecision: seleccionar el tramo termico con mayor riesgo validable antes de intervenir.\nAction: confirmar TAG/calidad, revisar causa recomendada y asignar inspeccion del circuito.",
+                        "type":  "table"
                    },
                    {
                        "collapsed":  false,

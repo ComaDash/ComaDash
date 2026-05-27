@@ -34,7 +34,9 @@
                                       },
                        "fieldConfig":  {
                                            "defaults":  {
-                                                            "unit":  "MWh"
+                                                             "decimals":  1,
+                                                             "displayName":  "Energía generada",
+                                                             "unit":  "MWh"
                                                         },
                                            "overrides":  [
 
@@ -80,7 +82,9 @@
                                       },
                        "fieldConfig":  {
                                            "defaults":  {
-                                                            "unit":  "t/h"
+                                                             "decimals":  1,
+                                                             "displayName":  "Throughput biomasa",
+                                                             "unit":  "t/h"
                                                         },
                                            "overrides":  [
 
@@ -187,7 +191,9 @@
                                       },
                        "fieldConfig":  {
                                            "defaults":  {
-                                                            "unit":  "currencyUSD"
+                                                             "decimals":  0,
+                                                             "displayName":  "Costo operacional estimado",
+                                                             "unit":  "currencyUSD"
                                                         },
                                            "overrides":  [
 
@@ -248,7 +254,9 @@
                                       },
                        "fieldConfig":  {
                                            "defaults":  {
-                                                            "unit":  "currencyUSD"
+                                                             "decimals":  0,
+                                                             "displayName":  "Costo biomasa por MWh",
+                                                             "unit":  "currencyUSD"
                                                         },
                                            "overrides":  [
 
@@ -294,7 +302,9 @@
                                       },
                        "fieldConfig":  {
                                            "defaults":  {
-                                                            "unit":  "currencyUSD"
+                                                             "decimals":  0,
+                                                             "displayName":  "Costo circuito térmico",
+                                                             "unit":  "currencyUSD"
                                                         },
                                            "overrides":  [
 
@@ -525,7 +535,7 @@
                                    },
                        "targets":  [
                                        {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -12h) |\u003e filter(fn: (r) =\u003e r._measurement == \"maintenance_recommendation\") |\u003e pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e keep(columns: [\"_time\", \"equipment\", \"severity\", \"expected_impact\", \"impacted_kpis\", \"suggested_action\"]) |\u003e sort(columns: [\"_time\"], desc: true)",
+                                            "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -12h) |\u003e filter(fn: (r) =\u003e r._measurement == \"maintenance_recommendation\") |\u003e pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e keep(columns: [\"_time\", \"equipment\", \"severity\", \"probable_cause\", \"expected_impact\", \"impacted_kpis\", \"suggested_action\", \"due_minutes\", \"ack_status\"]) |\u003e sort(columns: [\"due_minutes\"])",
                                            "refId":  "A"
                                        }
                                    ],

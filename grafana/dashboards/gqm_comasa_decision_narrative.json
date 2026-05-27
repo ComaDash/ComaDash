@@ -10,7 +10,7 @@
     {
       "datasource": {"type": "influxdb", "uid": "influxdb-comasa"},
       "description": "Goal:\nPriorizar el tramo operacional COMASA con mayor riesgo actual.\nQuestion:\n¿Qué tramo requiere atención primero en los próximos 10 segundos de diagnóstico?\nMetric:\nsegment_status.risk_score con status, reason, tag, unit, quality y confidence cuando existe; Fuente: segment_status; Unidad: score de riesgo.\nDecision:\nSeleccionar el tramo crítico que debe revisar el turno antes de navegar dashboards grandes.\nAction:\nValidar TAG/calidad y ejecutar la recomendación vinculada al tramo con mayor risk_score.",
-      "fieldConfig": {"defaults": {"thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "orange", "value": 60}, {"color": "red", "value": 80}]}, "unit": "percent"}, "overrides": []},
+      "fieldConfig": {"defaults": {"decimals": 0, "displayName": "Risk score tramo crítico", "thresholds": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "orange", "value": 60}, {"color": "red", "value": 80}]}, "unit": "percent"}, "overrides": []},
       "gridPos": {"h": 5, "w": 8, "x": 0, "y": 1},
       "id": 1,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
@@ -21,11 +21,12 @@
     {
       "datasource": {"type": "influxdb", "uid": "influxdb-comasa"},
       "description": "Goal:\nOrdenar los tramos COMASA por riesgo, causa, calidad de dato y acción recomendada.\nQuestion:\n¿Cuál es el ranking GQM de tramos y qué evidencia justifica actuar?\nMetric:\nsegment_status: risk_score, status, reason, quality, confidence, tag, unit, recommendation_link y cost_efficiency_impact.\nDecision:\nPriorizar inspección/intervención sobre el tramo de mayor riesgo con evidencia trazable.\nAction:\nAsignar responsable, confirmar TAG/unidad/calidad y seguir la recomendación operacional asociada.",
-      "fieldConfig": {"defaults": {"custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false}}, "overrides": []},
+      "fieldConfig": {"defaults": {"custom": {"align": "auto", "cellOptions": {"type": "auto"}, "inspect": false}}, "overrides": [{"matcher": {"id": "byName", "options": "risk_score"}, "properties": [{"id": "unit", "value": "percent"}, {"id": "decimals", "value": 0}, {"id": "custom.cellOptions", "value": {"mode": "gradient", "type": "color-background"}}, {"id": "thresholds", "value": {"mode": "absolute", "steps": [{"color": "green", "value": null}, {"color": "orange", "value": 60}, {"color": "red", "value": 80}]}}]}, {"matcher": {"id": "byName", "options": "confidence"}, "properties": [{"id": "unit", "value": "percent"}, {"id": "decimals", "value": 0}]}]},
       "gridPos": {"h": 7, "w": 16, "x": 8, "y": 1},
       "id": 2,
       "options": {"cellHeight": "sm", "showHeader": true},
-      "targets": [{"query": "from(bucket: \"${bucket}\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == \"segment_status\") |> pivot(rowKey: [\"_time\", \"segment_id\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"unit\", \"quality\", \"status\", \"impacted_problem\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> sort(columns: [\"_time\"], desc: true) |> unique(column: \"segment_id\") |> group() |> keep(columns: [\"status\", \"risk_score\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"value\", \"unit\", \"quality\", \"confidence\", \"reason\", \"recommendation_link\", \"cost_efficiency_impact\"]) |> sort(columns: [\"risk_score\"], desc: true)", "refId": "A"}],
+      "targets": [{"query": "from(bucket: \"${bucket}\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == \"segment_status\") |> pivot(rowKey: [\"_time\", \"segment_id\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"unit\", \"quality\", \"status\", \"impacted_problem\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> sort(columns: [\"_time\"], desc: true) |> unique(column: \"segment_id\") |> group() |> keep(columns: [\"risk_score\", \"status\", \"reason\", \"recommendation_link\", \"cost_efficiency_impact\", \"quality\", \"confidence\", \"tag\", \"unit\", \"from_node\", \"to_node\", \"fluid\", \"value\"]) |> sort(columns: [\"risk_score\"], desc: true)", "refId": "A"}],
+      "transformations": [{"id": "organize", "options": {"excludeByName": {"value": true}, "indexByName": {"risk_score": 0, "status": 1, "reason": 2, "recommendation_link": 3, "cost_efficiency_impact": 4, "quality": 5, "confidence": 6, "tag": 7, "unit": 8, "from_node": 9, "to_node": 10, "fluid": 11}, "renameByName": {"risk_score": "Riesgo", "status": "Estado", "reason": "Causa", "recommendation_link": "Acción", "cost_efficiency_impact": "Impacto", "quality": "Calidad", "confidence": "Confianza", "tag": "TAG", "unit": "Unidad", "from_node": "Desde", "to_node": "Hasta", "fluid": "Fluido"}}}],
       "title": "Ranking GQM de tramos: causa, calidad y acción",
       "type": "table"
     },
@@ -33,7 +34,7 @@
     {
       "datasource": {"type": "influxdb", "uid": "influxdb-comasa"},
       "description": "Goal:\nAnalizar el circuito agua-vapor-condensado para detectar degradación térmica y recuperación insuficiente.\nQuestion:\n¿La eficiencia del circuito confirma pérdida de agua, vapor o condensado recuperado?\nMetric:\ncondensado_recuperado, agua_por_mwh y vapor_por_mwh desde kpi; Unidad: mixta causal, no comparación homogénea.\nDecision:\nDeterminar si el circuito térmico explica el costo o pérdida operacional observada.\nAction:\nRevisar tramos, purgas, recuperación de condensado y calidad de medición antes de ajustar operación.",
-      "fieldConfig": {"defaults": {"displayName": "${__field.labels.kpi} (${__field.labels.unit})", "unit": "short"}, "overrides": []},
+      "fieldConfig": {"defaults": {"custom": {"axisLabel": "Unidades mixtas — relación causal"}, "displayName": "${__field.labels.kpi} (${__field.labels.unit})", "unit": "short"}, "overrides": []},
       "gridPos": {"h": 6, "w": 16, "x": 0, "y": 9},
       "id": 3,
       "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "single", "sort": "none"}},
@@ -44,7 +45,7 @@
     {
       "datasource": {"type": "influxdb", "uid": "influxdb-comasa"},
       "description": "Goal:\nCuantificar el costo actual del circuito térmico COMASA.\nQuestion:\n¿Cuánto impacta en costo la condición agua-vapor-condensado?\nMetric:\ncosto_agua_vapor_condensado desde kpi.value; Unidad: currencyUSD/demo_currency según fuente.\nDecision:\nEscalar la decisión si el costo térmico sostiene el caso económico.\nAction:\nPriorizar revisión del circuito y registrar impacto económico para jefatura.",
-      "fieldConfig": {"defaults": {"unit": "currencyUSD"}, "overrides": []},
+      "fieldConfig": {"defaults": {"decimals": 0, "displayName": "Costo circuito térmico", "unit": "currencyUSD"}, "overrides": []},
       "gridPos": {"h": 6, "w": 8, "x": 16, "y": 9},
       "id": 4,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
@@ -56,7 +57,7 @@
     {
       "datasource": {"type": "influxdb", "uid": "influxdb-comasa"},
       "description": "Goal:\nRelacionar humedad de biomasa, consumo y potencia generada para explicar variabilidad operacional.\nQuestion:\n¿La biomasa húmeda aumenta consumo o reduce MW generados?\nMetric:\nHumedadBiomasa, ConsumoBiomasa y PotenciaMW desde telemetry_raw.value; Unidad: mixta causal, no comparación directa de magnitudes.\nDecision:\nDecidir si conviene ajustar mezcla, alimentación o combustión antes de culpar solo a generación.\nAction:\nValidar humedad/consumo con el turno y revisar setpoints de alimentación y combustión.",
-      "fieldConfig": {"defaults": {"displayName": "${__field.labels.variable} (${__field.labels.unit})", "unit": "short"}, "overrides": []},
+      "fieldConfig": {"defaults": {"custom": {"axisLabel": "Unidades mixtas — relación causal"}, "displayName": "${__field.labels.variable} (${__field.labels.unit})", "unit": "short"}, "overrides": []},
       "gridPos": {"h": 7, "w": 24, "x": 0, "y": 16},
       "id": 5,
       "options": {"legend": {"displayMode": "list", "placement": "bottom"}, "tooltip": {"mode": "single", "sort": "none"}},
@@ -80,7 +81,7 @@
     {
       "datasource": {"type": "influxdb", "uid": "influxdb-comasa"},
       "description": "Goal:\nMostrar si la operación sostiene generación útil para COMASA.\nQuestion:\n¿Cuánta energía se está generando ahora como resultado del estado operacional?\nMetric:\nenergia_generada_mwh_h desde kpi.value; Unidad: MWh/h.\nDecision:\nConfirmar si el diagnóstico operativo tiene impacto visible en generación.\nAction:\nUsar la tendencia para contextualizar la decisión ejecutiva y no aislar costo sin producción.",
-      "fieldConfig": {"defaults": {"unit": "MWh"}, "overrides": []},
+      "fieldConfig": {"defaults": {"decimals": 1, "displayName": "Energía generada", "unit": "MWh"}, "overrides": []},
       "gridPos": {"h": 5, "w": 8, "x": 0, "y": 32},
       "id": 7,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
@@ -102,7 +103,7 @@
     {
       "datasource": {"type": "influxdb", "uid": "influxdb-comasa"},
       "description": "Goal:\nCerrar la narrativa con el costo operacional estimado disponible para COMASA.\nQuestion:\n¿Cuál es el costo operacional estimado que acompaña la decisión?\nMetric:\ncosto_operacional_estimado desde kpi.value; Unidad: currencyUSD/demo_currency según fuente existente.\nDecision:\nDefinir si la acción recomendada tiene prioridad económica inmediata.\nAction:\nUsar el costo junto con riesgo/OEE para justificar intervención, seguimiento o escalamiento ejecutivo.",
-      "fieldConfig": {"defaults": {"unit": "currencyUSD"}, "overrides": []},
+      "fieldConfig": {"defaults": {"decimals": 0, "displayName": "Costo operacional", "unit": "currencyUSD"}, "overrides": []},
       "gridPos": {"h": 5, "w": 8, "x": 16, "y": 32},
       "id": 9,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "center", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "showPercentChange": false, "textMode": "auto", "wideLayout": true},
