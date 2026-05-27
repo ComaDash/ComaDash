@@ -221,6 +221,37 @@ Payload recomendado:
 }
 ```
 
+Para el tramo operacional de agua-vapor-condensado, el prototipo agrega metadatos opcionales y compatibles hacia atrás: `from_node`, `to_node`, `fluid`, `unit_generator`, `operating_condition`, `source_sheet` y `stage`. Si un consumidor antiguo ignora estos campos, el payload sigue funcionando porque conserva `timestamp`, `site`, `plant`, `area`, `equipment`, `tag`, `variable`, `value`, `unit`, `quality`, `source` y `scenario`.
+
+Ejemplo refinado para un TAG del XLSX:
+
+```json
+{
+  "tag": "FT_3001",
+  "variable": "Flujo",
+  "value": 71.0,
+  "unit": "ton/h",
+  "from_node": "Proceso/retorno",
+  "to_node": "Tanque condensado",
+  "fluid": "Condensado",
+  "unit_generator": "UG1",
+  "operating_condition": "Media carga",
+  "source_sheet": "UG_1_MT",
+  "stage": "Retorno condensado",
+  "quality": "GOOD"
+}
+```
+
+La analítica publica además una medición derivada `segment_status`. No reemplaza `asset_risk`; es una vista de decisión por tramo para que Grafana pueda responder rápido: **qué tramo atender primero, por qué, con qué calidad de dato y con qué impacto operativo/costo**.
+
+Contrato resumido de `segment_status`:
+
+- Tags: `segment_id`, `from_node`, `to_node`, `fluid`, `unit_generator`, `operating_condition`, `variable`, `tag`, `unit`, `source`, `source_sheet`, `stage`, `quality`, `status`, `impacted_problem`.
+- Fields: `risk_score`, `reason`, `recommendation_cause`, `recommendation_link`, `cost_efficiency_impact`, `value`, `confidence`.
+- Umbrales: `critical >= 85`, `warning >= 65`, `watch >= 35`, `normal < 35`.
+
+Esto es deliberadamente aditivo y de baja fidelidad: no es una ingesta completa del XLSX ni un modelo de conocimiento de turnos. Es la capa mínima para demostrar trazabilidad de tramo, ranking operacional y narrativa de decisión dentro de Grafana nativo.
+
 Esta estructura ayuda porque separa claramente:
 
 - empresa;

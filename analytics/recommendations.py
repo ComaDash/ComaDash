@@ -31,6 +31,20 @@ RECOMMENDATIONS = {
         "impact": "Evita detención no programada y protege disponibilidad/OEE",
         "due_minutes": 120,
     },
+    "cavitacion_bomba": {
+        "equipment": "BombaAguaAlimentacion",
+        "cause": "Posible cavitación o restricción hidráulica en bomba de agua de alimentación",
+        "action": "Revisar NPSH, succión, filtro, válvulas y presión de descarga de la bomba",
+        "impact": "Evita daño mecánico, pérdida de caudal y detención del circuito agua-vapor",
+        "due_minutes": 90,
+    },
+    "combustion_inestable": {
+        "equipment": "CombustionCaldera",
+        "cause": "Relación aire/combustible inestable con CO elevado u O2 fuera de banda",
+        "action": "Ajustar aire de combustión, revisar alimentación de biomasa y verificar analizadores O2/CO",
+        "impact": "Mejora eficiencia térmica y reduce emisiones por combustión incompleta",
+        "due_minutes": 60,
+    },
 }
 
 
