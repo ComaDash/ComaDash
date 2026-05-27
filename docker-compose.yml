@@ -1,0 +1,123 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: comadash-mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mqtt/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -h localhost -t '$$SYS/#' -C 1 -W 3 >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  influxdb:
+    image: influxdb:2.7
+    container_name: comadash-influxdb
+    ports:
+      - "8086:8086"
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: ${INFLUXDB_ADMIN_USER:-admin}
+      DOCKER_INFLUXDB_INIT_PASSWORD: ${INFLUXDB_ADMIN_PASSWORD:-admin12345}
+      DOCKER_INFLUXDB_INIT_ORG: ${INFLUXDB_ORG:-comasa}
+      DOCKER_INFLUXDB_INIT_BUCKET: ${INFLUXDB_BUCKET:-comasa}
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-comasa-demo-token}
+    volumes:
+      - influxdb-data:/var/lib/influxdb2
+      - influxdb-config:/etc/influxdb2
+    healthcheck:
+      test: ["CMD", "influx", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  telegraf:
+    image: telegraf:1.30
+    container_name: comadash-telegraf
+    depends_on:
+      mosquitto:
+        condition: service_started
+      influxdb:
+        condition: service_healthy
+    environment:
+      INFLUXDB_URL: ${INFLUXDB_URL:-http://influxdb:8086}
+      INFLUXDB_ORG: ${INFLUXDB_ORG:-comasa}
+      INFLUXDB_BUCKET: ${INFLUXDB_BUCKET:-comasa}
+      INFLUXDB_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-comasa-demo-token}
+      COMASA_MQTT_HOST: ${COMASA_MQTT_HOST:-mosquitto}
+      COMASA_MQTT_PORT: ${COMASA_MQTT_PORT:-1883}
+    volumes:
+      - ./telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: comadash-grafana
+    depends_on:
+      influxdb:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-admin}
+      INFLUXDB_URL: ${INFLUXDB_URL:-http://influxdb:8086}
+      INFLUXDB_ORG: ${INFLUXDB_ORG:-comasa}
+      INFLUXDB_BUCKET: ${INFLUXDB_BUCKET:-comasa}
+      INFLUXDB_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-comasa-demo-token}
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+      - ./grafana/dashboards:/var/lib/grafana/dashboards:ro
+
+  simulator:
+    image: python:3.11-slim
+    container_name: comadash-simulator
+    depends_on:
+      mosquitto:
+        condition: service_started
+    working_dir: /app
+    command: sh -c "pip install --no-cache-dir -r requirements.txt && python main.py"
+    environment:
+      COMASA_MQTT_HOST: ${COMASA_MQTT_HOST:-mosquitto}
+      COMASA_MQTT_PORT: ${COMASA_MQTT_PORT:-1883}
+      COMASA_MQTT_TOPIC_PREFIX: ${COMASA_MQTT_TOPIC_PREFIX:-COMASA/Lautaro/Planta1}
+      SIM_SCENARIO: ${SIM_SCENARIO:-normal}
+      SIM_INTERVAL_SECONDS: ${SIM_INTERVAL_SECONDS:-2}
+    volumes:
+      - ./simulator:/app:ro
+
+  analytics:
+    image: python:3.11-slim
+    container_name: comadash-analytics
+    depends_on:
+      mosquitto:
+        condition: service_started
+      influxdb:
+        condition: service_healthy
+    working_dir: /app
+    command: sh -c "pip install --no-cache-dir -r requirements.txt && python main.py"
+    environment:
+      COMASA_MQTT_HOST: ${COMASA_MQTT_HOST:-mosquitto}
+      COMASA_MQTT_PORT: ${COMASA_MQTT_PORT:-1883}
+      INFLUXDB_URL: ${INFLUXDB_URL:-http://influxdb:8086}
+      INFLUXDB_ORG: ${INFLUXDB_ORG:-comasa}
+      INFLUXDB_BUCKET: ${INFLUXDB_BUCKET:-comasa}
+      INFLUXDB_ADMIN_TOKEN: ${INFLUXDB_ADMIN_TOKEN:-comasa-demo-token}
+      COST_BIOMASS_PER_TON: ${COST_BIOMASS_PER_TON:-42}
+      COST_WATER_PER_M3: ${COST_WATER_PER_M3:-0.9}
+      COST_VAPOR_LOSS_PER_TON: ${COST_VAPOR_LOSS_PER_TON:-8}
+      CONDENSATE_RECOVERY_BENEFIT_PER_TON: ${CONDENSATE_RECOVERY_BENEFIT_PER_TON:-3}
+      POWER_NOMINAL_MW: ${POWER_NOMINAL_MW:-24}
+    volumes:
+      - ./analytics:/app:ro
+
+volumes:
+  mosquitto-data:
+  mosquitto-log:
+  influxdb-data:
+  influxdb-config:
+  grafana-data:
