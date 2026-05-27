@@ -1,667 +1,823 @@
 {
-    "annotations":  {
-                        "list":  [
-
-                                 ]
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "panels": [],
+      "title": "Prioridad de mantenimiento",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 35
+              },
+              {
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\" and r._field == \"risk_score\") |> group(columns: [\"equipment\"]) |> last() |> group() |> max()",
+          "refId": "A"
+        }
+      ],
+      "title": "Riesgo máximo: activo que manda la prioridad",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo maximo activo.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 35
+              },
+              {
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent",
+          "displayName": "${__field.labels.equipment}"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 18,
+        "x": 6,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "left",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\" and r._field == \"risk_score\") |> group(columns: [\"equipment\"]) |> last() |> group() |> sort(columns: [\"_value\"], desc: true)",
+          "refId": "A"
+        }
+      ],
+      "title": "Ranking de equipos por riesgo de falla",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre ranking visual de equipos cerca de falla.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "risk_score"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
                     },
-    "editable":  true,
-    "fiscalYearStartMonth":  0,
-    "graphTooltip":  0,
-    "id":  null,
-    "links":  [
-
-              ],
-    "panels":  [
-                   {
-                       "collapsed":  false,
-                       "gridPos":  {
-                                       "h":  1,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  0
-                                   },
-                       "id":  100,
-                       "panels":  [
-
-                                  ],
-                       "title":  "Prioridad de mantenimiento",
-                       "type":  "row"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "max":  100,
-                                                            "min":  0,
-                                                            "thresholds":  {
-                                                                               "mode":  "absolute",
-                                                                               "steps":  [
-                                                                                             {
-                                                                                                 "color":  "green",
-                                                                                                 "value":  null
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "blue",
-                                                                                                 "value":  35
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "orange",
-                                                                                                 "value":  65
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "red",
-                                                                                                 "value":  85
-                                                                                             }
-                                                                                         ]
-                                                                           },
-                                                            "unit":  "percent"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  4,
-                                       "w":  6,
-                                       "x":  0,
-                                       "y":  1
-                                   },
-                       "id":  1,
-                       "options":  {
-                                       "colorMode":  "background",
-                                       "graphMode":  "area",
-                                       "justifyMode":  "center",
-                                       "orientation":  "auto",
-                                       "reduceOptions":  {
-                                                             "calcs":  [
-                                                                           "lastNotNull"
-                                                                       ],
-                                                             "fields":  "",
-                                                             "values":  false
-                                                         },
-                                       "showPercentChange":  false,
-                                       "textMode":  "auto",
-                                       "wideLayout":  true
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -5m) |\u003e filter(fn: (r) =\u003e r._measurement == \"asset_risk\" and r._field == \"risk_score\") |\u003e group(columns: [\"equipment\"]) |\u003e last() |\u003e group() |\u003e max()",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Riesgo máximo activo",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo maximo activo.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "stat"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "max":  100,
-                                                            "min":  0,
-                                                            "thresholds":  {
-                                                                               "mode":  "absolute",
-                                                                               "steps":  [
-                                                                                             {
-                                                                                                 "color":  "green",
-                                                                                                 "value":  null
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "blue",
-                                                                                                 "value":  35
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "orange",
-                                                                                                 "value":  65
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "red",
-                                                                                                 "value":  85
-                                                                                             }
-                                                                                         ]
-                                                                           },
-                                                            "unit":  "percent",
-                                                            "displayName":  "${__field.labels.equipment}"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  4,
-                                       "w":  18,
-                                       "x":  6,
-                                       "y":  1
-                                   },
-                       "id":  2,
-                       "options":  {
-                                       "displayMode":  "gradient",
-                                       "maxVizHeight":  300,
-                                       "minVizHeight":  16,
-                                       "minVizWidth":  8,
-                                       "namePlacement":  "left",
-                                       "orientation":  "horizontal",
-                                       "reduceOptions":  {
-                                                             "calcs":  [
-                                                                           "lastNotNull"
-                                                                       ],
-                                                             "fields":  "",
-                                                             "values":  false
-                                                         },
-                                       "showUnfilled":  true,
-                                       "sizing":  "auto",
-                                       "valueMode":  "color"
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -5m) |\u003e filter(fn: (r) =\u003e r._measurement == \"asset_risk\" and r._field == \"risk_score\") |\u003e group(columns: [\"equipment\"]) |\u003e last() |\u003e group() |\u003e sort(columns: [\"_value\"], desc: true)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Ranking visual de equipos cerca de falla",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre ranking visual de equipos cerca de falla.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "bargauge"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "custom":  {
-                                                                           "align":  "auto",
-                                                                           "cellOptions":  {
-                                                                                               "type":  "auto"
-                                                                                           },
-                                                                           "inspect":  false
-                                                                       }
-                                                        },
-                                           "overrides":  [
-                                                             {
-                                                                 "matcher":  {
-                                                                                 "id":  "byName",
-                                                                                 "options":  "risk_score"
-                                                                             },
-                                                                 "properties":  [
-                                                                                    {
-                                                                                        "id":  "unit",
-                                                                                        "value":  "percent"
-                                                                                    },
-                                                                                    {
-                                                                                        "id":  "custom.cellOptions",
-                                                                                        "value":  {
-                                                                                                      "mode":  "gradient",
-                                                                                                      "type":  "color-background"
-                                                                                                  }
-                                                                                    },
-                                                                                    {
-                                                                                        "id":  "thresholds",
-                                                                                        "value":  {
-                                                                                                      "mode":  "absolute",
-                                                                                                      "steps":  [
-                                                                                                                    {
-                                                                                                                        "color":  "green",
-                                                                                                                        "value":  null
-                                                                                                                    },
-                                                                                                                    {
-                                                                                                                        "color":  "blue",
-                                                                                                                        "value":  35
-                                                                                                                    },
-                                                                                                                    {
-                                                                                                                        "color":  "orange",
-                                                                                                                        "value":  65
-                                                                                                                    },
-                                                                                                                    {
-                                                                                                                        "color":  "red",
-                                                                                                                        "value":  85
-                                                                                                                    }
-                                                                                                                ]
-                                                                                                  }
-                                                                                    }
-                                                                                ]
-                                                             }
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  8,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  5
-                                   },
-                       "id":  3,
-                       "options":  {
-                                       "cellHeight":  "sm",
-                                       "showHeader":  true
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -5m) |\u003e filter(fn: (r) =\u003e r._measurement == \"asset_risk\") |\u003e pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e sort(columns: [\"_time\"], desc: true) |\u003e unique(column: \"equipment\") |\u003e keep(columns: [\"equipment\", \"area\", \"status\", \"probable_anomaly\", \"risk_score\", \"dominant_signal\", \"suggested_action\", \"due_minutes\", \"expected_impact\"]) |\u003e sort(columns: [\"risk_score\"], desc: true)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Equipos cerca de fallar: orden de atención",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre equipos cerca de fallar orden de atencion.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "table"
-                   },
-                   {
-                       "collapsed":  false,
-                       "gridPos":  {
-                                       "h":  1,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  13
-                                   },
-                       "id":  101,
-                       "panels":  [
-
-                                  ],
-                       "title":  "Eventos y acciones",
-                       "type":  "row"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "displayName":  "${__field.labels.equipment} ${__field.labels.type}"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  12,
-                                       "x":  0,
-                                       "y":  14
-                                   },
-                       "id":  4,
-                       "options":  {
-                                       "legend":  {
-                                                      "displayMode":  "list",
-                                                      "placement":  "bottom"
-                                                  },
-                                       "tooltip":  {
-                                                       "mode":  "single",
-                                                       "sort":  "none"
-                                                   }
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -12h) |\u003e filter(fn: (r) =\u003e r._measurement == \"anomaly_event\") |\u003e pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e keep(columns: [\"_time\", \"equipment\", \"severity\", \"type\", \"score\"])",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Timeline de anomalías por equipo",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre timeline de anomalias por equipo.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: anomaly_event; tiempo, equipo, severidad y causa probable.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "state-timeline"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "custom":  {
-                                                                           "align":  "auto",
-                                                                           "cellOptions":  {
-                                                                                               "type":  "auto"
-                                                                                           },
-                                                                           "inspect":  false
-                                                                       }
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  12,
-                                       "x":  12,
-                                       "y":  14
-                                   },
-                       "id":  5,
-                       "options":  {
-                                       "cellHeight":  "sm",
-                                       "showHeader":  true
-                                   },
-                       "targets":  [
-                                       {
-                                            "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -12h) |\u003e filter(fn: (r) =\u003e r._measurement == \"maintenance_recommendation\") |\u003e pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e keep(columns: [\"_time\", \"equipment\", \"severity\", \"probable_cause\", \"suggested_action\", \"expected_impact\", \"due_minutes\", \"ack_status\"]) |\u003e sort(columns: [\"due_minutes\"])",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Backlog preventivo recomendado",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre backlog preventivo recomendado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; prioridad, accion, impacto esperado y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "table"
-                   },
-                   {
-                       "collapsed":  false,
-                       "gridPos":  {
-                                       "h":  1,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  21
-                                   },
-                       "id":  102,
-                       "panels":  [
-
-                                  ],
-                       "title":  "Salud mecánica y confiabilidad",
-                       "type":  "row"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "thresholds":  {
-                                                                               "mode":  "absolute",
-                                                                               "steps":  [
-                                                                                             {
-                                                                                                 "color":  "green",
-                                                                                                 "value":  null
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "orange",
-                                                                                                 "value":  3.4
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "red",
-                                                                                                 "value":  4.3
-                                                                                             }
-                                                                                         ]
-                                                                           },
-                                                            "unit":  "velocityms",
-                                                            "displayName":  "${__field.labels.variable} (${__field.labels.unit})"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  8,
-                                       "x":  0,
-                                       "y":  22
-                                   },
-                       "id":  6,
-                       "options":  {
-                                       "legend":  {
-                                                      "displayMode":  "list",
-                                                      "placement":  "bottom"
-                                                  },
-                                       "tooltip":  {
-                                                       "mode":  "single",
-                                                       "sort":  "none"
-                                                   }
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -30m) |\u003e filter(fn: (r) =\u003e r._measurement == \"telemetry_raw\" and (r.variable == \"VibracionRMS\" or r.variable == \"VibracionBombaRMS\") and r._field == \"value\") |\u003e group(columns: [\"variable\", \"unit\"]) |\u003e aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Vibración RMS turbina y bomba",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre vibracion rms turbina y bomba.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "timeseries"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "unit":  "short",
-                                                            "displayName":  "${__field.labels.variable} (${__field.labels.unit})"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  8,
-                                       "x":  8,
-                                       "y":  22
-                                   },
-                       "id":  7,
-                       "options":  {
-                                       "legend":  {
-                                                      "displayMode":  "list",
-                                                      "placement":  "bottom"
-                                                  },
-                                       "tooltip":  {
-                                                       "mode":  "single",
-                                                       "sort":  "none"
-                                                   }
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -30m) |\u003e filter(fn: (r) =\u003e r._measurement == \"telemetry_raw\" and (r.variable == \"VibracionFFT1X\" or r.variable == \"VibracionBombaFFTAlta\") and r._field == \"value\") |\u003e last() |\u003e group(columns: [\"variable\", \"unit\"])",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Componentes FFT dominantes",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre componentes fft dominantes.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "barchart"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "unit":  "h",
-                                                            "displayName":  "${__field.labels.kpi} (${__field.labels.unit})"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  8,
-                                       "x":  16,
-                                       "y":  22
-                                   },
-                       "id":  8,
-                       "options":  {
-                                       "legend":  {
-                                                      "displayMode":  "list",
-                                                      "placement":  "bottom"
-                                                  },
-                                       "tooltip":  {
-                                                       "mode":  "single",
-                                                       "sort":  "none"
-                                                   }
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -6h) |\u003e filter(fn: (r) =\u003e r._measurement == \"kpi\" and (r.kpi == \"mtbf_horas_demo\" or r.kpi == \"mttr_horas_demo\" or r.kpi == \"horas_detencion_no_programada\") and r._field == \"value\") |\u003e last() |\u003e group(columns: [\"kpi\", \"unit\"])",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Confiabilidad actual",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre confiabilidad actual.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: kpi/asset_risk segun query del panel; unidad operacional reportada.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "barchart"
-                   },
-                   {
-                       "collapsed":  false,
-                       "gridPos":  {
-                                       "h":  1,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  29
-                                   },
-                       "id":  103,
-                       "panels":  [
-
-                                  ],
-                       "title":  "Indicadores tempranos",
-                       "type":  "row"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "thresholds":  {
-                                                                               "mode":  "absolute",
-                                                                               "steps":  [
-                                                                                             {
-                                                                                                 "color":  "green",
-                                                                                                 "value":  null
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "orange",
-                                                                                                 "value":  206
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "red",
-                                                                                                 "value":  220
-                                                                                             }
-                                                                                         ]
-                                                                           },
-                                                            "unit":  "celsius",
-                                                            "displayName":  "TemperaturaEscape (°C)"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  12,
-                                       "x":  0,
-                                       "y":  30
-                                   },
-                       "id":  9,
-                       "options":  {
-                                       "legend":  {
-                                                      "displayMode":  "list",
-                                                      "placement":  "bottom"
-                                                  },
-                                       "tooltip":  {
-                                                       "mode":  "single",
-                                                       "sort":  "none"
-                                                   }
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -30m) |\u003e filter(fn: (r) =\u003e r._measurement == \"telemetry_raw\" and r.variable == \"TemperaturaEscape\" and r._field == \"value\") |\u003e group(columns: [\"variable\", \"unit\"]) |\u003e aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Indicador temprano: temperatura de escape",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre indicador temprano temperatura de escape.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "timeseries"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "thresholds":  {
-                                                                               "mode":  "absolute",
-                                                                               "steps":  [
-                                                                                             {
-                                                                                                 "color":  "green",
-                                                                                                 "value":  null
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "orange",
-                                                                                                 "value":  24
-                                                                                             },
-                                                                                             {
-                                                                                                 "color":  "red",
-                                                                                                 "value":  30
-                                                                                             }
-                                                                                         ]
-                                                                           },
-                                                            "unit":  "mbar",
-                                                            "displayName":  "PresionDiferencial (mbar)"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  12,
-                                       "x":  12,
-                                       "y":  30
-                                   },
-                       "id":  10,
-                       "options":  {
-                                       "legend":  {
-                                                      "displayMode":  "list",
-                                                      "placement":  "bottom"
-                                                  },
-                                       "tooltip":  {
-                                                       "mode":  "single",
-                                                       "sort":  "none"
-                                                   }
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -30m) |\u003e filter(fn: (r) =\u003e r._measurement == \"telemetry_raw\" and r.variable == \"PresionDiferencial\" and r._field == \"value\") |\u003e group(columns: [\"variable\", \"unit\"]) |\u003e aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Indicador temprano: presión diferencial",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre indicador temprano presion diferencial.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "timeseries"
-                   }
-               ],
-    "refresh":  "5s",
-    "schemaVersion":  39,
-    "tags":  [
-                 "COMASA",
-                 "mantencion",
-                 "riesgo",
-                 "GQM"
-             ],
-    "templating":  {
-                       "list":  [
-                                    {
-                                        "current":  {
-                                                        "text":  "comasa",
-                                                        "value":  "comasa"
-                                                    },
-                                        "hide":  2,
-                                        "label":  "Bucket",
-                                        "name":  "bucket",
-                                        "query":  "comasa",
-                                        "type":  "constant"
-                                    }
-                                ]
-                   },
-    "time":  {
-                 "from":  "now-1h",
-                 "to":  "now"
-             },
-    "timezone":  "browser",
-    "title":  "GQM - COMASA Predictive Maintenance Risk",
-    "uid":  "gqm-maintenance-risk",
-    "version":  2,
-    "weekStart":  ""
+                    {
+                      "color": "blue",
+                      "value": 35
+                    },
+                    {
+                      "color": "orange",
+                      "value": 65
+                    },
+                    {
+                      "color": "red",
+                      "value": 85
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Riesgo"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Probabilidad falla"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 3,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> sort(columns: [\"_time\"], desc: true) |> unique(column: \"equipment\") |> keep(columns: [\"equipment\", \"area\", \"status\", \"probable_anomaly\", \"risk_score\", \"dominant_signal\", \"suggested_action\", \"due_minutes\", \"expected_impact\"]) |> sort(columns: [\"risk_score\"], desc: true)",
+          "refId": "A"
+        }
+      ],
+      "title": "Equipos cerca de fallar: prioridad, causa y probabilidad",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre equipos cerca de fallar orden de atencion.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "risk_score": 0,
+              "probability_failure": 1,
+              "status": 2,
+              "equipment": 3,
+              "area": 4,
+              "probable_cause": 5,
+              "recommended_action": 6,
+              "_time": 7
+            },
+            "renameByName": {
+              "risk_score": "Riesgo",
+              "probability_failure": "Probabilidad falla",
+              "status": "Estado",
+              "equipment": "Equipo",
+              "area": "Área",
+              "probable_cause": "Causa probable",
+              "recommended_action": "Acción recomendada",
+              "_time": "Hora"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 101,
+      "panels": [],
+      "title": "Eventos y acciones",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "${__field.labels.equipment} ${__field.labels.type}"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 14
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -12h) |> filter(fn: (r) => r._measurement == \"anomaly_event\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> keep(columns: [\"_time\", \"equipment\", \"severity\", \"type\", \"score\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Cronología de anomalías por equipo y tipo",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre timeline de anomalias por equipo.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: anomaly_event; tiempo, equipo, severidad y causa probable.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "state-timeline"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Plazo min"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "min"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "green",
+                      "value": 180
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 14
+      },
+      "id": 5,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -12h) |> filter(fn: (r) => r._measurement == \"maintenance_recommendation\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> keep(columns: [\"_time\", \"equipment\", \"severity\", \"probable_cause\", \"suggested_action\", \"expected_impact\", \"due_minutes\", \"ack_status\"]) |> sort(columns: [\"due_minutes\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Backlog preventivo: causa, acción, impacto y plazo",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre backlog preventivo recomendado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; prioridad, accion, impacto esperado y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "severity": 0,
+              "equipment": 1,
+              "probable_cause": 2,
+              "suggested_action": 3,
+              "expected_impact": 4,
+              "due_minutes": 5,
+              "ack_status": 6,
+              "_time": 7
+            },
+            "renameByName": {
+              "severity": "Severidad",
+              "equipment": "Equipo",
+              "probable_cause": "Causa probable",
+              "suggested_action": "Acción sugerida",
+              "expected_impact": "Impacto esperado",
+              "due_minutes": "Plazo min",
+              "ack_status": "Estado ack",
+              "_time": "Hora"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 102,
+      "panels": [],
+      "title": "Salud mecánica y confiabilidad",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 3.4
+              },
+              {
+                "color": "red",
+                "value": 4.3
+              }
+            ]
+          },
+          "unit": "velocityms",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 22
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and (r.variable == \"VibracionRMS\" or r.variable == \"VibracionBombaRMS\") and r._field == \"value\") |> map(fn: (r) => ({ r with label: if r.variable == \"VibracionRMS\" then \"Vibración RMS turbina\" else if r.variable == \"VibracionBombaRMS\" then \"Vibración RMS bomba\" else r.variable })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Vibración RMS: evidencia mecánica temprana",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre vibracion rms turbina y bomba.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 22
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and (r.variable == \"VibracionFFT1X\" or r.variable == \"VibracionBombaFFTAlta\") and r._field == \"value\") |> last() |> map(fn: (r) => ({ r with label: if r.variable == \"VibracionFFT1X\" then \"FFT 1X turbina\" else if r.variable == \"VibracionBombaFFTAlta\" then \"FFT alta bomba\" else r.variable })) |> group(columns: [\"label\", \"unit\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "FFT dominante: patrón de falla probable",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre componentes fft dominantes.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "h",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 22
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and (r.kpi == \"mtbf_horas_demo\" or r.kpi == \"mttr_horas_demo\" or r.kpi == \"horas_detencion_no_programada\") and r._field == \"value\") |> last() |> map(fn: (r) => ({ r with label: if r.kpi == \"mtbf_horas_demo\" then \"MTBF demo\" else if r.kpi == \"mttr_horas_demo\" then \"MTTR demo\" else if r.kpi == \"horas_detencion_no_programada\" then \"Detención no programada\" else r.kpi })) |> group(columns: [\"label\", \"unit\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Confiabilidad actual: MTBF, MTTR y detenciones",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre confiabilidad actual.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: kpi/asset_risk segun query del panel; unidad operacional reportada.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "barchart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 103,
+      "panels": [],
+      "title": "Indicadores tempranos",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 206
+              },
+              {
+                "color": "red",
+                "value": 220
+              }
+            ]
+          },
+          "unit": "celsius",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 30
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and r.variable == \"TemperaturaEscape\" and r._field == \"value\") |> map(fn: (r) => ({ r with label: if r.variable == \"TemperaturaEscape\" then \"Temperatura escape\" else r.variable })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Temperatura de escape: alerta temprana fouling",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre indicador temprano temperatura de escape.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 24
+              },
+              {
+                "color": "red",
+                "value": 30
+              }
+            ]
+          },
+          "unit": "mbar",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 30
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and r.variable == \"PresionDiferencial\" and r._field == \"value\") |> map(fn: (r) => ({ r with label: if r.variable == \"PresionDiferencial\" then \"Presión diferencial\" else r.variable })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Presión diferencial: alerta temprana restricción",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre indicador temprano presion diferencial.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": [
+    "COMASA",
+    "mantencion",
+    "riesgo",
+    "GQM"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "comasa",
+          "value": "comasa"
+        },
+        "hide": 2,
+        "label": "Bucket",
+        "name": "bucket",
+        "query": "comasa",
+        "type": "constant"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "GQM - COMASA Predictive Maintenance Risk",
+  "uid": "gqm-maintenance-risk",
+  "version": 2,
+  "weekStart": ""
 }

@@ -1,638 +1,908 @@
 {
-    "annotations":  {
-                        "list":  [
-
-                                 ]
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "panels": [],
+      "title": "Pregunta 1: ¿Qué tramo agua-vapor-condensado necesita atención primero?",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "risk_score"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
                     },
-    "editable":  true,
-    "fiscalYearStartMonth":  0,
-    "graphTooltip":  0,
-    "id":  null,
-    "links":  [
-
-              ],
-    "panels":  [
-                   {
-                       "collapsed":  false,
-                       "gridPos":  {
-                                       "h":  1,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  0
-                                   },
-                       "id":  100,
-                       "panels":  [
-
-                                  ],
-                       "title":  "Pregunta 1: ¿Qué tramo agua-vapor-condensado necesita atención primero?",
-                       "type":  "row"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "custom":  {
-                                                                           "align":  "auto",
-                                                                           "cellOptions":  {
-                                                                                               "type":  "auto"
-                                                                                           },
-                                                                           "inspect":  false
-                                                                       }
-                                                        },
-                                            "overrides":  [
-                                                              {
-                                                                  "matcher":  {
-                                                                                  "id":  "byName",
-                                                                                  "options":  "risk_score"
-                                                                              },
-                                                                  "properties":  [
-                                                                                     {
-                                                                                         "id":  "unit",
-                                                                                         "value":  "percent"
-                                                                                     },
-                                                                                     {
-                                                                                         "id":  "decimals",
-                                                                                         "value":  0
-                                                                                     },
-                                                                                     {
-                                                                                         "id":  "custom.cellOptions",
-                                                                                         "value":  {
-                                                                                                       "mode":  "gradient",
-                                                                                                       "type":  "color-background"
-                                                                                                   }
-                                                                                     },
-                                                                                     {
-                                                                                         "id":  "thresholds",
-                                                                                         "value":  {
-                                                                                                       "mode":  "absolute",
-                                                                                                       "steps":  [
-                                                                                                                     {
-                                                                                                                         "color":  "green",
-                                                                                                                         "value":  null
-                                                                                                                     },
-                                                                                                                     {
-                                                                                                                         "color":  "orange",
-                                                                                                                         "value":  60
-                                                                                                                     },
-                                                                                                                     {
-                                                                                                                         "color":  "red",
-                                                                                                                         "value":  80
-                                                                                                                     }
-                                                                                                                 ]
-                                                                                                   }
-                                                                                     }
-                                                                                 ]
-                                                              },
-                                                              {
-                                                                  "matcher":  {
-                                                                                  "id":  "byName",
-                                                                                  "options":  "confidence"
-                                                                              },
-                                                                  "properties":  [
-                                                                                     {
-                                                                                         "id":  "unit",
-                                                                                         "value":  "percent"
-                                                                                     },
-                                                                                     {
-                                                                                         "id":  "decimals",
-                                                                                         "value":  0
-                                                                                     }
-                                                                                 ]
-                                                              }
-                                                          ]
-                                       },
-                       "gridPos":  {
-                                       "h":  8,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  1
-                                   },
-                       "id":  2,
-                       "options":  {
-                                       "cellHeight":  "sm",
-                                       "showHeader":  true
-                                   },
-                       "targets":  [
-                                       {
-                                            "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -10m) |\u003e filter(fn: (r) =\u003e r._measurement == \"segment_status\") |\u003e pivot(rowKey: [\"_time\", \"segment_id\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"unit\", \"quality\", \"status\", \"impacted_problem\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e sort(columns: [\"_time\"], desc: true) |\u003e unique(column: \"segment_id\") |\u003e group() |\u003e keep(columns: [\"risk_score\", \"status\", \"reason\", \"recommendation_link\", \"cost_efficiency_impact\", \"quality\", \"confidence\", \"tag\", \"unit\", \"from_node\", \"to_node\", \"fluid\"]) |\u003e sort(columns: [\"risk_score\"], desc: true)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                        "transformations":  [
-                                                {
-                                                    "id":  "organize",
-                                                    "options":  {
-                                                                    "indexByName":  {
-                                                                                        "risk_score":  0,
-                                                                                        "status":  1,
-                                                                                        "reason":  2,
-                                                                                        "recommendation_link":  3,
-                                                                                        "cost_efficiency_impact":  4,
-                                                                                        "quality":  5,
-                                                                                        "confidence":  6,
-                                                                                        "tag":  7,
-                                                                                        "unit":  8,
-                                                                                        "from_node":  9,
-                                                                                        "to_node":  10,
-                                                                                        "fluid":  11
-                                                                                    },
-                                                                    "renameByName":  {
-                                                                                         "risk_score":  "Riesgo",
-                                                                                         "status":  "Estado",
-                                                                                         "reason":  "Causa",
-                                                                                         "recommendation_link":  "Acción",
-                                                                                         "cost_efficiency_impact":  "Impacto",
-                                                                                         "quality":  "Calidad",
-                                                                                         "confidence":  "Confianza",
-                                                                                         "tag":  "TAG",
-                                                                                         "unit":  "Unidad",
-                                                                                         "from_node":  "Desde",
-                                                                                         "to_node":  "Hasta",
-                                                                                         "fluid":  "Fluido"
-                                                                                     }
-                                                                }
-                                                }
-                                            ],
-                        "title":  "Ranking de tramos con razón, calidad y acción",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre ranking de tramos con razon calidad y accion.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: segment_status; status, risk_score, reason, quality, tag, unit y cost_efficiency_impact.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "table"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "unit":  "short",
-                                                            "displayName":  "${__field.labels.kpi} (${__field.labels.unit})"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  6,
-                                       "w":  12,
-                                       "x":  0,
-                                       "y":  9
-                                   },
-                       "id":  3,
-                       "options":  {
-                                       "legend":  {
-                                                      "displayMode":  "list",
-                                                      "placement":  "bottom"
-                                                  },
-                                       "tooltip":  {
-                                                       "mode":  "single",
-                                                       "sort":  "none"
-                                                   }
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -30m) |\u003e filter(fn: (r) =\u003e r._measurement == \"kpi\" and (r.kpi == \"condensado_recuperado\" or r.kpi == \"agua_por_mwh\" or r.kpi == \"vapor_por_mwh\") and r._field == \"value\") |\u003e group(columns: [\"kpi\", \"unit\"]) |\u003e aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "¿La eficiencia del circuito confirma la pérdida?",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre la eficiencia del circuito confirma la perdida.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: kpi/asset_risk segun query del panel; unidad operacional reportada. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "timeseries"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "unit":  "currencyUSD"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  6,
-                                       "w":  12,
-                                       "x":  12,
-                                       "y":  9
-                                   },
-                       "id":  4,
-                       "options":  {
-                                       "colorMode":  "value",
-                                       "graphMode":  "area",
-                                       "justifyMode":  "center",
-                                       "orientation":  "auto",
-                                       "reduceOptions":  {
-                                                             "calcs":  [
-                                                                           "lastNotNull"
-                                                                       ],
-                                                             "fields":  "",
-                                                             "values":  false
-                                                         },
-                                       "showPercentChange":  false,
-                                       "textMode":  "auto",
-                                       "wideLayout":  true
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -30m) |\u003e filter(fn: (r) =\u003e r._measurement == \"kpi\" and r.kpi == \"costo_agua_vapor_condensado\" and r._field == \"value\") |\u003e last()",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "¿Cuánto duele en costo agua/vapor?",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre cuanto duele en costo agua vapor.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costos operacionales desde kpi; unidad monetaria o tendencia economica segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "stat"
-                   },
-                   {
-                       "collapsed":  false,
-                       "gridPos":  {
-                                       "h":  1,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  15
-                                   },
-                       "id":  101,
-                       "panels":  [
-
-                                  ],
-                       "title":  "Pregunta 2: ¿La variabilidad de biomasa está golpeando potencia y costo?",
-                       "type":  "row"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "unit":  "short",
-                                                            "displayName":  "${__field.labels.variable} (${__field.labels.unit})"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  16,
-                                       "x":  0,
-                                       "y":  16
-                                   },
-                       "id":  5,
-                       "options":  {
-                                       "legend":  {
-                                                      "displayMode":  "list",
-                                                      "placement":  "bottom"
-                                                  },
-                                       "tooltip":  {
-                                                       "mode":  "single",
-                                                       "sort":  "none"
-                                                   }
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -30m) |\u003e filter(fn: (r) =\u003e r._measurement == \"telemetry_raw\" and (r.variable == \"HumedadBiomasa\" or r.variable == \"ConsumoBiomasa\" or r.variable == \"PotenciaMW\") and r._field == \"value\") |\u003e group(columns: [\"variable\", \"unit\"]) |\u003e aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Humedad -\u003e consumo -\u003e MW",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre humedad, consumo y MW.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: HumedadBiomasa, ConsumoBiomasa y PotenciaMW desde telemetry_raw; valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "timeseries"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "custom":  {
-                                                                           "align":  "auto",
-                                                                           "cellOptions":  {
-                                                                                               "type":  "auto"
-                                                                                           },
-                                                                           "inspect":  false
-                                                                       }
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  8,
-                                       "x":  16,
-                                       "y":  16
-                                   },
-                       "id":  6,
-                       "options":  {
-                                       "cellHeight":  "sm",
-                                       "showHeader":  true
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -12h) |\u003e filter(fn: (r) =\u003e r._measurement == \"maintenance_recommendation\") |\u003e pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e filter(fn: (r) =\u003e r.equipment == \"SistemaBiomasa\") |\u003e keep(columns: [\"severity\", \"probable_cause\", \"suggested_action\", \"expected_impact\"]) |\u003e sort(columns: [\"_time\"], desc: true) |\u003e limit(n: 3)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Acción sobre biomasa",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre accion sobre biomasa.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; prioridad, accion, impacto esperado y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "table"
-                   },
-                   {
-                       "collapsed":  false,
-                       "gridPos":  {
-                                       "h":  1,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  23
-                                   },
-                       "id":  102,
-                       "panels":  [
-
-                                  ],
-                       "title":  "Pregunta 3: ¿Hay señal de degradación térmica asociada al agua?",
-                       "type":  "row"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "custom":  {
-                                                                           "align":  "auto",
-                                                                           "cellOptions":  {
-                                                                                               "type":  "auto"
-                                                                                           },
-                                                                           "inspect":  false
-                                                                       }
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  24
-                                   },
-                       "id":  7,
-                       "options":  {
-                                       "cellHeight":  "sm",
-                                       "showHeader":  true
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -10m) |\u003e filter(fn: (r) =\u003e r._measurement == \"segment_status\" and r.impacted_problem == \"well_water_thermal_degradation\") |\u003e pivot(rowKey: [\"_time\", \"segment_id\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"quality\", \"status\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e sort(columns: [\"_time\"], desc: true) |\u003e unique(column: \"segment_id\") |\u003e group() |\u003e keep(columns: [\"status\", \"risk_score\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"value\", \"quality\", \"confidence\", \"reason\", \"recommendation_cause\"]) |\u003e sort(columns: [\"risk_score\"], desc: true)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                        "title":  "Señal térmica y confianza de datos",
-                        "description":  "Goal: priorizar tramos asociados a degradacion termica con evidencia de calidad y confianza.\nQuestion: Que señal termica del circuito de agua requiere revision primero?\nMetric: segment_status filtrado por well_water_thermal_degradation; risk_score, quality, confidence, reason y recommendation_cause.\nDecision: seleccionar el tramo termico con mayor riesgo validable antes de intervenir.\nAction: confirmar TAG/calidad, revisar causa recomendada y asignar inspeccion del circuito.",
-                        "type":  "table"
-                   },
-                   {
-                       "collapsed":  false,
-                       "gridPos":  {
-                                       "h":  1,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  31
-                                   },
-                       "id":  103,
-                       "panels":  [
-
-                                  ],
-                       "title":  "Pregunta 4: ¿Qué conocimiento operacional debe quedar sistematizado?",
-                       "type":  "row"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "custom":  {
-                                                                           "align":  "auto",
-                                                                           "cellOptions":  {
-                                                                                               "type":  "auto"
-                                                                                           },
-                                                                           "inspect":  false
-                                                                       }
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  32
-                                   },
-                       "id":  8,
-                       "options":  {
-                                       "cellHeight":  "sm",
-                                       "showHeader":  true
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -12h) |\u003e filter(fn: (r) =\u003e r._measurement == \"maintenance_recommendation\") |\u003e pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |\u003e keep(columns: [\"_time\", \"equipment\", \"severity\", \"probable_cause\", \"suggested_action\", \"expected_impact\", \"due_minutes\", \"ack_status\"]) |\u003e sort(columns: [\"_time\"], desc: true) |\u003e limit(n: 8)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                       "title":  "Causa -\u003e acción -\u003e impacto: base mínima de conocimiento del turno",
-                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre causa, accion e impacto del turno.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; causa probable, accion sugerida, impacto esperado, plazo y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
-                       "type":  "table"
-                   },
-                   {
-                       "collapsed":  false,
-                       "gridPos":  {
-                                       "h":  1,
-                                       "w":  24,
-                                       "x":  0,
-                                       "y":  39
-                                   },
-                       "id":  104,
-                       "panels":  [
-
-                                  ],
-                       "title":  "Pregunta 5: ¿Operación histórica y energía cuentan la misma historia?",
-                       "type":  "row"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "custom":  {
-                                                                           "axisPlacement":  "left"
-                                                                       },
-                                                            "displayName":  "Energía generada (MWh/h)",
-                                                            "unit":  "MWh"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  8,
-                                       "x":  0,
-                                       "y":  40
-                                   },
-                       "id":  9,
-                       "options":  {
-                                       "legend":  {
-                                                      "displayMode":  "list",
-                                                      "placement":  "bottom"
-                                                  },
-                                       "tooltip":  {
-                                                       "mode":  "single",
-                                                       "sort":  "none"
-                                                   }
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -2h) |\u003e filter(fn: (r) =\u003e r._measurement == \"kpi\" and r.kpi == \"energia_generada_mwh_h\" and r._field == \"value\") |\u003e group(columns: [\"kpi\", \"unit\"]) |\u003e aggregateWindow(every: 30s, fn: mean, createEmpty: false)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                        "title":  "Energía generada",
-                        "description":  "Goal: explicar si la planta produce suficiente energia para sostener la decision operacional.\nQuestion: La generacion confirma que el diagnostico operacional tiene impacto productivo?\nMetric: kpi energia_generada_mwh_h; Fuente: kpi; Unidad: MWh/h; Frecuencia: ventana de 2h agregada cada 30s.\nDecision: confirmar si la condicion operacional afecta la produccion antes de priorizar acciones.\nAction: revisar tendencia con eficiencia y costo, validar contexto de turno y escalar si la generacion cae.\nNotas: forma parte del equivalente actual al panel planificado `Energia, costo y eficiencia operacional`; lectura causal junto a eficiencia y costo, no comparacion homogenea.",
-                        "type":  "timeseries"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "custom":  {
-                                                                           "axisPlacement":  "left"
-                                                                       },
-                                                            "displayName":  "Eficiencia energética (MWh/ton)",
-                                                            "unit":  "short"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  8,
-                                       "x":  8,
-                                       "y":  40
-                                   },
-                       "id":  10,
-                       "options":  {
-                                       "legend":  {
-                                                      "displayMode":  "list",
-                                                      "placement":  "bottom"
-                                                  },
-                                       "tooltip":  {
-                                                       "mode":  "single",
-                                                       "sort":  "none"
-                                                   }
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -2h) |\u003e filter(fn: (r) =\u003e r._measurement == \"kpi\" and r.kpi == \"energia_por_ton_biomasa\" and r._field == \"value\") |\u003e group(columns: [\"kpi\", \"unit\"]) |\u003e aggregateWindow(every: 30s, fn: mean, createEmpty: false)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                        "title":  "Eficiencia energética",
-                        "description":  "Goal: evaluar si la energia por tonelada de biomasa sostiene una operacion eficiente.\nQuestion: La planta usa mejor o peor la biomasa para generar energia?\nMetric: kpi energia_por_ton_biomasa; Fuente: kpi; Unidad: MWh/ton o unidad operacional reportada; Frecuencia: ventana de 2h agregada cada 30s.\nDecision: determinar si la variabilidad operacional amerita ajuste de combustible, proceso o mantencion.\nAction: comparar con generacion y costo, validar calidad de datos y activar recomendacion si la eficiencia se degrada.\nNotas: forma parte del equivalente actual al panel planificado `Energia, costo y eficiencia operacional`; lectura causal junto a energia y costo, no comparacion homogenea.",
-                        "type":  "timeseries"
-                   },
-                   {
-                       "datasource":  {
-                                          "type":  "influxdb",
-                                          "uid":  "influxdb-comasa"
-                                      },
-                       "fieldConfig":  {
-                                           "defaults":  {
-                                                            "custom":  {
-                                                                           "axisPlacement":  "left"
-                                                                       },
-                                                            "displayName":  "Costo operacional estimado (demo_currency/h)",
-                                                            "unit":  "currencyUSD"
-                                                        },
-                                           "overrides":  [
-
-                                                         ]
-                                       },
-                       "gridPos":  {
-                                       "h":  7,
-                                       "w":  8,
-                                       "x":  16,
-                                       "y":  40
-                                   },
-                       "id":  11,
-                       "options":  {
-                                       "legend":  {
-                                                      "displayMode":  "list",
-                                                      "placement":  "bottom"
-                                                  },
-                                       "tooltip":  {
-                                                       "mode":  "single",
-                                                       "sort":  "none"
-                                                   }
-                                   },
-                       "targets":  [
-                                       {
-                                           "query":  "from(bucket: \"${bucket}\") |\u003e range(start: -2h) |\u003e filter(fn: (r) =\u003e r._measurement == \"kpi\" and r.kpi == \"costo_operacional_estimado\" and r._field == \"value\") |\u003e group(columns: [\"kpi\", \"unit\"]) |\u003e aggregateWindow(every: 30s, fn: mean, createEmpty: false)",
-                                           "refId":  "A"
-                                       }
-                                   ],
-                        "title":  "Costo operacional estimado",
-                        "description":  "Goal: traducir la condicion operacional a impacto economico comprensible para jefatura.\nQuestion: El costo estimado confirma que el problema tecnico debe priorizarse?\nMetric: kpi costo_operacional_estimado; Fuente: kpi; Unidad: demo_currency/h; Frecuencia: ventana de 2h agregada cada 30s.\nDecision: priorizar acciones cuando el costo crece junto con menor energia o eficiencia.\nAction: revisar riesgos asociados, asignar responsable y comunicar impacto economico de la intervencion.\nNotas: forma parte del equivalente actual al panel planificado `Energia, costo y eficiencia operacional`; costo demo/prototipo, lectura causal junto a energia y eficiencia.",
-                        "type":  "timeseries"
-                   }
-               ],
-    "refresh":  "5s",
-    "schemaVersion":  39,
-    "tags":  [
-                 "COMASA",
-                 "problemas",
-                 "segmentos",
-                 "hackaton",
-                 "GQM",
-                 "decision"
-             ],
-    "templating":  {
-                       "list":  [
-                                    {
-                                        "current":  {
-                                                        "text":  "comasa",
-                                                        "value":  "comasa"
-                                                    },
-                                        "hide":  2,
-                                        "label":  "Bucket",
-                                        "name":  "bucket",
-                                        "query":  "comasa",
-                                        "type":  "constant"
-                                    }
-                                ]
-                   },
-    "time":  {
-                 "from":  "now-1h",
-                 "to":  "now"
-             },
-    "timezone":  "browser",
-    "title":  "GQM - COMASA Problem-First Operations",
-    "uid":  "gqm-problem-first-ops",
-    "version":  1,
-    "weekStart":  ""
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "confidence"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Riesgo"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Confianza"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "green",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == \"segment_status\") |> pivot(rowKey: [\"_time\", \"segment_id\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"unit\", \"quality\", \"status\", \"impacted_problem\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> sort(columns: [\"_time\"], desc: true) |> unique(column: \"segment_id\") |> group() |> keep(columns: [\"risk_score\", \"status\", \"reason\", \"recommendation_link\", \"cost_efficiency_impact\", \"quality\", \"confidence\", \"tag\", \"unit\", \"from_node\", \"to_node\", \"fluid\"]) |> sort(columns: [\"risk_score\"], desc: true)",
+          "refId": "A"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "indexByName": {
+              "risk_score": 0,
+              "status": 1,
+              "reason": 2,
+              "recommendation_link": 3,
+              "cost_efficiency_impact": 4,
+              "quality": 5,
+              "confidence": 6,
+              "tag": 7,
+              "unit": 8,
+              "from_node": 9,
+              "to_node": 10,
+              "fluid": 11
+            },
+            "renameByName": {
+              "risk_score": "Riesgo",
+              "status": "Estado",
+              "reason": "Causa",
+              "recommendation_link": "Acción",
+              "cost_efficiency_impact": "Impacto",
+              "quality": "Calidad",
+              "confidence": "Confianza",
+              "tag": "TAG",
+              "unit": "Unidad",
+              "from_node": "Desde",
+              "to_node": "Hasta",
+              "fluid": "Fluido"
+            }
+          }
+        }
+      ],
+      "title": "Prioridad de tramos: riesgo, causa y acción",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre ranking de tramos con razon calidad y accion.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: segment_status; status, risk_score, reason, quality, tag, unit y cost_efficiency_impact.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "displayName": "${__field.labels.kpi} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"kpi\" and (r.kpi == \"condensado_recuperado\" or r.kpi == \"agua_por_mwh\" or r.kpi == \"vapor_por_mwh\") and r._field == \"value\") |> group(columns: [\"kpi\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Confirmación térmica: eficiencia vs pérdida",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre la eficiencia del circuito confirma la perdida.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: kpi/asset_risk segun query del panel; unidad operacional reportada. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"costo_agua_vapor_condensado\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Impacto económico inmediato agua/vapor",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre cuanto duele en costo agua vapor.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costos operacionales desde kpi; unidad monetaria o tendencia economica segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 101,
+      "panels": [],
+      "title": "Pregunta 2: ¿La variabilidad de biomasa está golpeando potencia y costo?",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})",
+          "custom": {
+            "axisLabel": "Unidades mixtas — tendencia causal, no suma directa"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 16,
+        "x": 0,
+        "y": 16
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and (r.variable == \"HumedadBiomasa\" or r.variable == \"ConsumoBiomasa\" or r.variable == \"PotenciaMW\") and r._field == \"value\") |> map(fn: (r) => ({ r with label: if r.variable == \"HumedadBiomasa\" then \"Humedad biomasa\" else if r.variable == \"ConsumoBiomasa\" then \"Consumo biomasa\" else if r.variable == \"PotenciaMW\" then \"Potencia MW\" else r.variable })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Relación biomasa: humedad, consumo y potencia",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre humedad, consumo y MW.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: HumedadBiomasa, ConsumoBiomasa y PotenciaMW desde telemetry_raw; valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 16
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -12h) |> filter(fn: (r) => r._measurement == \"maintenance_recommendation\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> filter(fn: (r) => r.equipment == \"SistemaBiomasa\") |> keep(columns: [\"severity\", \"probable_cause\", \"suggested_action\", \"expected_impact\"]) |> sort(columns: [\"_time\"], desc: true) |> limit(n: 3)",
+          "refId": "A"
+        }
+      ],
+      "title": "Acción biomasa: causa, acción e impacto",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre accion sobre biomasa.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; prioridad, accion, impacto esperado y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "severity": 0,
+              "probable_cause": 1,
+              "suggested_action": 2,
+              "expected_impact": 3
+            },
+            "renameByName": {
+              "severity": "Severidad",
+              "probable_cause": "Causa probable",
+              "suggested_action": "Acción sugerida",
+              "expected_impact": "Impacto esperado"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 102,
+      "panels": [],
+      "title": "Pregunta 3: ¿Hay señal de degradación térmica asociada al agua?",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Riesgo"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Confianza"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "green",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == \"segment_status\" and r.impacted_problem == \"well_water_thermal_degradation\") |> pivot(rowKey: [\"_time\", \"segment_id\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"quality\", \"status\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> sort(columns: [\"_time\"], desc: true) |> unique(column: \"segment_id\") |> group() |> keep(columns: [\"status\", \"risk_score\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"value\", \"quality\", \"confidence\", \"reason\", \"recommendation_cause\"]) |> sort(columns: [\"risk_score\"], desc: true)",
+          "refId": "A"
+        }
+      ],
+      "title": "Degradación térmica: riesgo, calidad y causa",
+      "description": "Goal: priorizar tramos asociados a degradacion termica con evidencia de calidad y confianza.\nQuestion: Que señal termica del circuito de agua requiere revision primero?\nMetric: segment_status filtrado por well_water_thermal_degradation; risk_score, quality, confidence, reason y recommendation_cause.\nDecision: seleccionar el tramo termico con mayor riesgo validable antes de intervenir.\nAction: confirmar TAG/calidad, revisar causa recomendada y asignar inspeccion del circuito.",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "risk_score": 0,
+              "status": 1,
+              "from_node": 2,
+              "to_node": 3,
+              "fluid": 4,
+              "tag": 5,
+              "value": 6,
+              "quality": 7,
+              "confidence": 8,
+              "reason": 9,
+              "recommendation_cause": 10
+            },
+            "renameByName": {
+              "risk_score": "Riesgo",
+              "status": "Estado",
+              "from_node": "Desde",
+              "to_node": "Hasta",
+              "fluid": "Fluido",
+              "tag": "TAG",
+              "value": "Valor actual",
+              "quality": "Calidad",
+              "confidence": "Confianza",
+              "reason": "Causa",
+              "recommendation_cause": "Causa recomendada"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 103,
+      "panels": [],
+      "title": "Pregunta 4: ¿Qué conocimiento operacional debe quedar sistematizado?",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Plazo min"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "min"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "green",
+                      "value": 180
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -12h) |> filter(fn: (r) => r._measurement == \"maintenance_recommendation\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> keep(columns: [\"_time\", \"equipment\", \"severity\", \"probable_cause\", \"suggested_action\", \"expected_impact\", \"due_minutes\", \"ack_status\"]) |> sort(columns: [\"_time\"], desc: true) |> limit(n: 8)",
+          "refId": "A"
+        }
+      ],
+      "title": "Conocimiento del turno: causa, acción, impacto y plazo",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre causa, accion e impacto del turno.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; causa probable, accion sugerida, impacto esperado, plazo y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "severity": 0,
+              "equipment": 1,
+              "probable_cause": 2,
+              "suggested_action": 3,
+              "expected_impact": 4,
+              "due_minutes": 5,
+              "ack_status": 6,
+              "_time": 7
+            },
+            "renameByName": {
+              "severity": "Severidad",
+              "equipment": "Equipo",
+              "probable_cause": "Causa probable",
+              "suggested_action": "Acción sugerida",
+              "expected_impact": "Impacto esperado",
+              "due_minutes": "Plazo min",
+              "ack_status": "Estado ack",
+              "_time": "Hora"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 39
+      },
+      "id": 104,
+      "panels": [],
+      "title": "Pregunta 5: ¿Operación histórica y energía cuentan la misma historia?",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "axisPlacement": "left"
+          },
+          "displayName": "Energía generada (MWh/h)",
+          "unit": "MWh"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 0,
+        "y": 40
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -2h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"energia_generada_mwh_h\" and r._field == \"value\") |> group(columns: [\"kpi\", \"unit\"]) |> aggregateWindow(every: 30s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Generación: ¿la operación sostiene producción?",
+      "description": "Goal: explicar si la planta produce suficiente energia para sostener la decision operacional.\nQuestion: La generacion confirma que el diagnostico operacional tiene impacto productivo?\nMetric: kpi energia_generada_mwh_h; Fuente: kpi; Unidad: MWh/h; Frecuencia: ventana de 2h agregada cada 30s.\nDecision: confirmar si la condicion operacional afecta la produccion antes de priorizar acciones.\nAction: revisar tendencia con eficiencia y costo, validar contexto de turno y escalar si la generacion cae.\nNotas: forma parte del equivalente actual al panel planificado `Energia, costo y eficiencia operacional`; lectura causal junto a eficiencia y costo, no comparacion homogenea.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "axisPlacement": "left"
+          },
+          "displayName": "Eficiencia energética (MWh/ton)",
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 8,
+        "y": 40
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -2h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"energia_por_ton_biomasa\" and r._field == \"value\") |> group(columns: [\"kpi\", \"unit\"]) |> aggregateWindow(every: 30s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Eficiencia energética: biomasa convertida en MWh",
+      "description": "Goal: evaluar si la energia por tonelada de biomasa sostiene una operacion eficiente.\nQuestion: La planta usa mejor o peor la biomasa para generar energia?\nMetric: kpi energia_por_ton_biomasa; Fuente: kpi; Unidad: MWh/ton o unidad operacional reportada; Frecuencia: ventana de 2h agregada cada 30s.\nDecision: determinar si la variabilidad operacional amerita ajuste de combustible, proceso o mantencion.\nAction: comparar con generacion y costo, validar calidad de datos y activar recomendacion si la eficiencia se degrada.\nNotas: forma parte del equivalente actual al panel planificado `Energia, costo y eficiencia operacional`; lectura causal junto a energia y costo, no comparacion homogenea.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "axisPlacement": "left"
+          },
+          "displayName": "Costo operacional estimado (demo_currency/h)",
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 8,
+        "x": 16,
+        "y": 40
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -2h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"costo_operacional_estimado\" and r._field == \"value\") |> group(columns: [\"kpi\", \"unit\"]) |> aggregateWindow(every: 30s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Costo operacional: señal económica de prioridad",
+      "description": "Goal: traducir la condicion operacional a impacto economico comprensible para jefatura.\nQuestion: El costo estimado confirma que el problema tecnico debe priorizarse?\nMetric: kpi costo_operacional_estimado; Fuente: kpi; Unidad: demo_currency/h; Frecuencia: ventana de 2h agregada cada 30s.\nDecision: priorizar acciones cuando el costo crece junto con menor energia o eficiencia.\nAction: revisar riesgos asociados, asignar responsable y comunicar impacto economico de la intervencion.\nNotas: forma parte del equivalente actual al panel planificado `Energia, costo y eficiencia operacional`; costo demo/prototipo, lectura causal junto a energia y eficiencia.",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": [
+    "COMASA",
+    "problemas",
+    "segmentos",
+    "hackaton",
+    "GQM",
+    "decision"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "comasa",
+          "value": "comasa"
+        },
+        "hide": 2,
+        "label": "Bucket",
+        "name": "bucket",
+        "query": "comasa",
+        "type": "constant"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "GQM - COMASA Problem-First Operations",
+  "uid": "gqm-problem-first-ops",
+  "version": 1,
+  "weekStart": ""
 }
