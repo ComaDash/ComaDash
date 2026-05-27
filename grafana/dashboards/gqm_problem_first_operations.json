@@ -64,6 +64,7 @@
                                        }
                                    ],
                        "title":  "Ranking de tramos con razón, calidad y acción",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre ranking de tramos con razon calidad y accion.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: segment_status; status, risk_score, reason, quality, tag, unit y cost_efficiency_impact.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "table"
                    },
                    {
@@ -104,6 +105,7 @@
                                        }
                                    ],
                        "title":  "¿La eficiencia del circuito confirma la pérdida?",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre la eficiencia del circuito confirma la perdida.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: kpi/asset_risk segun query del panel; unidad operacional reportada. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "timeseries"
                    },
                    {
@@ -149,6 +151,7 @@
                                        }
                                    ],
                        "title":  "¿Cuánto duele en costo agua/vapor?",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre cuanto duele en costo agua vapor.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costos operacionales desde kpi; unidad monetaria o tendencia economica segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "stat"
                    },
                    {
@@ -204,6 +207,7 @@
                                        }
                                    ],
                        "title":  "Humedad -\u003e consumo -\u003e MW",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre humedad, consumo y MW.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: HumedadBiomasa, ConsumoBiomasa y PotenciaMW desde telemetry_raw; valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "timeseries"
                    },
                    {
@@ -243,6 +247,7 @@
                                        }
                                    ],
                        "title":  "Acción sobre biomasa",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre accion sobre biomasa.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; prioridad, accion, impacto esperado y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "table"
                    },
                    {
@@ -351,6 +356,7 @@
                                        }
                                    ],
                        "title":  "Causa -\u003e acción -\u003e impacto: base mínima de conocimiento del turno",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre causa, accion e impacto del turno.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; causa probable, accion sugerida, impacto esperado, plazo y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "table"
                    },
                    {
@@ -408,8 +414,9 @@
                                            "refId":  "A"
                                        }
                                    ],
-                       "title":  "Energía generada",
-                       "type":  "timeseries"
+                        "title":  "Energía generada",
+                        "description":  "Goal: explicar si la planta produce suficiente energia para sostener la decision operacional.\nQuestion: La generacion confirma que el diagnostico operacional tiene impacto productivo?\nMetric: kpi energia_generada_mwh_h; Fuente: kpi; Unidad: MWh/h; Frecuencia: ventana de 2h agregada cada 30s.\nDecision: confirmar si la condicion operacional afecta la produccion antes de priorizar acciones.\nAction: revisar tendencia con eficiencia y costo, validar contexto de turno y escalar si la generacion cae.\nNotas: forma parte del equivalente actual al panel planificado `Energia, costo y eficiencia operacional`; lectura causal junto a eficiencia y costo, no comparacion homogenea.",
+                        "type":  "timeseries"
                    },
                    {
                        "datasource":  {
@@ -451,8 +458,9 @@
                                            "refId":  "A"
                                        }
                                    ],
-                       "title":  "Eficiencia energética",
-                       "type":  "timeseries"
+                        "title":  "Eficiencia energética",
+                        "description":  "Goal: evaluar si la energia por tonelada de biomasa sostiene una operacion eficiente.\nQuestion: La planta usa mejor o peor la biomasa para generar energia?\nMetric: kpi energia_por_ton_biomasa; Fuente: kpi; Unidad: MWh/ton o unidad operacional reportada; Frecuencia: ventana de 2h agregada cada 30s.\nDecision: determinar si la variabilidad operacional amerita ajuste de combustible, proceso o mantencion.\nAction: comparar con generacion y costo, validar calidad de datos y activar recomendacion si la eficiencia se degrada.\nNotas: forma parte del equivalente actual al panel planificado `Energia, costo y eficiencia operacional`; lectura causal junto a energia y costo, no comparacion homogenea.",
+                        "type":  "timeseries"
                    },
                    {
                        "datasource":  {
@@ -494,8 +502,9 @@
                                            "refId":  "A"
                                        }
                                    ],
-                       "title":  "Costo operacional estimado",
-                       "type":  "timeseries"
+                        "title":  "Costo operacional estimado",
+                        "description":  "Goal: traducir la condicion operacional a impacto economico comprensible para jefatura.\nQuestion: El costo estimado confirma que el problema tecnico debe priorizarse?\nMetric: kpi costo_operacional_estimado; Fuente: kpi; Unidad: demo_currency/h; Frecuencia: ventana de 2h agregada cada 30s.\nDecision: priorizar acciones cuando el costo crece junto con menor energia o eficiencia.\nAction: revisar riesgos asociados, asignar responsable y comunicar impacto economico de la intervencion.\nNotas: forma parte del equivalente actual al panel planificado `Energia, costo y eficiencia operacional`; costo demo/prototipo, lectura causal junto a energia y eficiencia.",
+                        "type":  "timeseries"
                    }
                ],
     "refresh":  "5s",

@@ -93,6 +93,7 @@
                                        }
                                    ],
                        "title":  "Riesgo circuito térmico",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo circuito termico.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "stat"
                    },
                    {
@@ -138,6 +139,7 @@
                                        }
                                    ],
                        "title":  "Agua por MWh",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre agua por mwh.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: agua_por_mwh desde kpi; unidad m3/MWh.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "stat"
                    },
                    {
@@ -183,6 +185,7 @@
                                        }
                                    ],
                        "title":  "Vapor por MWh",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre vapor por mwh.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: vapor_por_mwh desde kpi; unidad t/MWh.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "stat"
                    },
                    {
@@ -245,6 +248,7 @@
                                        }
                                    ],
                        "title":  "Condensado recuperado",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre condensado recuperado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: condensado_recuperado desde kpi; unidad porcentaje.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "stat"
                    },
                    {
@@ -300,6 +304,7 @@
                                        }
                                    ],
                        "title":  "Vapor FT_5101-1 vs condensado FT_3001",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre vapor ft 5101 1 vs condensado ft 3001.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: metricas consultadas por la query del panel; unidad segun serie. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "timeseries"
                    },
                    {
@@ -340,6 +345,7 @@
                                        }
                                    ],
                        "title":  "Eficiencia agua, vapor y condensado",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre eficiencia agua vapor y condensado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: kpi/asset_risk segun query del panel; unidad operacional reportada. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "timeseries"
                    },
                    {
@@ -385,6 +391,7 @@
                                        }
                                    ],
                        "title":  "Costo agua/vapor/condensado",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre costo agua vapor condensado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costos operacionales desde kpi; unidad monetaria o tendencia economica segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "stat"
                    },
                    {
@@ -439,6 +446,7 @@
                                        }
                                    ],
                        "title":  "Evento pérdida vapor/condensado",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre evento perdida vapor condensado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: anomaly_event; tiempo, equipo, severidad y causa probable.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "table"
                    },
                    {
@@ -478,6 +486,7 @@
                                        }
                                    ],
                        "title":  "Acción recomendada del circuito",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre accion recomendada del circuito.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; prioridad, accion, impacto esperado y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "table"
                    },
                    {
@@ -532,6 +541,7 @@
                                        }
                                    ],
                        "title":  "Tabla operacional por TAG: área, equipo, medición, unidad y valor",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre tabla operacional por tag area equipo medicion unidad y valor.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw; area, equipo, medicion, unidad, valor y calidad.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "table"
                    }
                ],

@@ -93,6 +93,7 @@
                                        }
                                    ],
                        "title":  "Riesgo fouling caldera",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo fouling caldera.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "stat"
                    },
                    {
@@ -161,6 +162,7 @@
                                        }
                                    ],
                        "title":  "Riesgo calidad biomasa",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo calidad biomasa.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "stat"
                    },
                    {
@@ -229,6 +231,7 @@
                                        }
                                    ],
                        "title":  "Riesgo combustión",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo combustion.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "stat"
                    },
                    {
@@ -274,6 +277,7 @@
                                        }
                                    ],
                        "title":  "Costo biomasa por MWh",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre costo biomasa por mwh.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costo_biomasa_por_mwh desde kpi; unidad monetaria/MWh.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "stat"
                    },
                    {
@@ -329,6 +333,7 @@
                                        }
                                    ],
                        "title":  "Fouling: temperatura escape + presión diferencial",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre fouling temperatura escape presion diferencial.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "timeseries"
                    },
                    {
@@ -369,6 +374,7 @@
                                        }
                                    ],
                        "title":  "Potencia generada vs consumo de biomasa",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre potencia generada vs consumo de biomasa.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "timeseries"
                    },
                    {
@@ -413,6 +419,7 @@
                                        }
                                    ],
                        "title":  "Humedad biomasa vs energía por tonelada",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre humedad biomasa vs energia por tonelada.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "timeseries"
                    },
                    {
@@ -453,6 +460,7 @@
                                        }
                                    ],
                        "title":  "Combustión: CO y O2",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre combustion co y o2.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "timeseries"
                    },
                    {
@@ -507,6 +515,7 @@
                                        }
                                    ],
                        "title":  "Eventos caldera/biomasa",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre eventos caldera biomasa.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: anomaly_event; tiempo, equipo, severidad y causa probable.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "table"
                    },
                    {
@@ -546,6 +555,7 @@
                                        }
                                    ],
                        "title":  "Recomendación asociada",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre recomendacion asociada.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; prioridad, accion, impacto esperado y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "table"
                    }
                ],

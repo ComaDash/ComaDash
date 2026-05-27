@@ -93,6 +93,7 @@
                                        }
                                    ],
                        "title":  "Riesgo máximo activo",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo maximo activo.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "stat"
                    },
                    {
@@ -164,6 +165,7 @@
                                        }
                                    ],
                        "title":  "Ranking visual de equipos cerca de falla",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre ranking visual de equipos cerca de falla.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "bargauge"
                    },
                    {
@@ -245,6 +247,7 @@
                                        }
                                    ],
                        "title":  "Equipos cerca de fallar: orden de atención",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre equipos cerca de fallar orden de atencion.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "table"
                    },
                    {
@@ -299,6 +302,7 @@
                                        }
                                    ],
                        "title":  "Timeline de anomalías por equipo",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre timeline de anomalias por equipo.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: anomaly_event; tiempo, equipo, severidad y causa probable.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "state-timeline"
                    },
                    {
@@ -338,6 +342,7 @@
                                        }
                                    ],
                        "title":  "Backlog preventivo recomendado",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre backlog preventivo recomendado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; prioridad, accion, impacto esperado y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "table"
                    },
                    {
@@ -410,6 +415,7 @@
                                        }
                                    ],
                        "title":  "Vibración RMS turbina y bomba",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre vibracion rms turbina y bomba.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "timeseries"
                    },
                    {
@@ -450,6 +456,7 @@
                                        }
                                    ],
                        "title":  "Componentes FFT dominantes",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre componentes fft dominantes.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "barchart"
                    },
                    {
@@ -490,6 +497,7 @@
                                        }
                                    ],
                        "title":  "Confiabilidad actual",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre confiabilidad actual.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: kpi/asset_risk segun query del panel; unidad operacional reportada.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "barchart"
                    },
                    {
@@ -562,6 +570,7 @@
                                        }
                                    ],
                        "title":  "Indicador temprano: temperatura de escape",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre indicador temprano temperatura de escape.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "timeseries"
                    },
                    {
@@ -619,6 +628,7 @@
                                        }
                                    ],
                        "title":  "Indicador temprano: presión diferencial",
+                       "description":  "Goal: convertir la evidencia del panel en una decision COMASA sobre indicador temprano presion diferencial.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
                        "type":  "timeseries"
                    }
                ],
