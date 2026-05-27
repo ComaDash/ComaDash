@@ -21,6 +21,19 @@ Keep `SIM_SCENARIO=normal`. Open Grafana at <http://localhost:3000> and use the 
 
 Inspect MQTT or InfluxDB raw points using the commands in `README.md` if you need to prove the data path.
 
+### 2.1 GQM compact route
+
+For the clearest 5-minute narrative, open Grafana dashboard **`GQM - COMASA Decision Narrative`** (`grafana/dashboards/gqm_comasa_decision_narrative.json`). Use this route:
+
+1. `Tramo crítico ahora`: identify the segment to inspect first.
+2. `Ranking GQM de tramos: causa, calidad y acción`: prove why the action is justified.
+3. `Eficiencia agua-vapor-condensado` + `Costo del circuito térmico`: connect technical loss with cost.
+4. `Biomasa húmeda: consumo y MW`: explain biomass as a causal driver, not a decorative chart.
+5. `Acciones recomendadas por impacto`: show the recommended operational action.
+6. `Energía generada`, `OEE`, `Costo operacional estimado`: close with executive impact.
+
+Use the other `GQM - ...` dashboards only as drill-down if the audience asks for evidence.
+
 ## 3. Inject failures
 
 Run one scenario at a time:

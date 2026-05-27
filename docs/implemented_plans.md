@@ -238,3 +238,23 @@ docker compose restart grafana
 
 - Keep this file updated whenever a new implementation plan is completed.
 - Prefer dashboard-level normalization before changing Telegraf tag ingestion, because the raw tags are useful for debugging and traceability.
+
+## 2026-05-27: GQM Dashboard Refinement
+
+### Goal
+
+Make the COMASA Goal-Question-Metric chain visible in Grafana without destructively changing existing dashboards.
+
+### Implemented
+
+- Added GQM dashboard duplicates under `grafana/dashboards/gqm_*.json` with `GQM - ...` titles, unique UIDs, `id: null`, and tag `GQM`.
+- Added GQM descriptions to key duplicated-dashboard panels using `Goal`, `Question`, `Metric`, `Decision`, and `Action`.
+- Added compact demo dashboard `grafana/dashboards/gqm_comasa_decision_narrative.json` titled `GQM - COMASA Decision Narrative` for the recommended 5-minute pitch route.
+- Documented the implementation in `docs/gqm_dashboard_implementation.md`, including planned-vs-actual title mapping, mitigations, rollback, and optional future metrics.
+- Updated `docs/dashboard_panel_guide.md` and `docs/demo.md` to point to the compact GQM route.
+
+### Safety notes
+
+- Original dashboards remain the source baseline and must not be deleted during rollback.
+- Rollback for this refinement is additive-only: remove the `grafana/dashboards/gqm_*.json` dashboards and the related GQM docs if needed.
+- The compact dashboard intentionally uses only native Grafana panel types: `row`, `stat`, `table`, `timeseries`, and `gauge`.

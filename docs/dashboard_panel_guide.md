@@ -34,13 +34,30 @@ Usala así:
 
 ### Ruta demo recomendada
 
-1. Abrir `problem_first_operations.json` y mostrar `Tramo crítico en 10 segundos` + `Ranking de tramos con razón, calidad y acción`.
+Ruta compacta preferida para GQM: abrir `GQM - COMASA Decision Narrative` (`grafana/dashboards/gqm_comasa_decision_narrative.json`, UID `gqm-decision-narrative`) y recorrer `Tramo crítico ahora`, `Ranking GQM de tramos: causa, calidad y acción`, `Eficiencia agua-vapor-condensado`, `Biomasa húmeda: consumo y MW`, `Acciones recomendadas por impacto`, `OEE` y `Costo operacional estimado`.
+
+Ruta histórica de drill-down si hace falta más detalle:
+
+1. Abrir `problem_first_operations.json` o su duplicado `gqm_problem_first_operations.json` y mostrar `Ranking de tramos con razón, calidad y acción`.
 2. Pasar a `¿La eficiencia del circuito confirma la pérdida?` y `¿Cuánto duele en costo agua/vapor?` para conectar operación con costo.
 3. Mostrar `Humedad -> consumo -> MW` y `Acción sobre biomasa` para explicar variabilidad de biomasa y recomendación accionable.
 4. Abrir `water_steam_condensate.json` y mostrar `Vapor FT_5101-1 vs condensado FT_3001`, `Tabla operacional por TAG: área, equipo, medición, unidad y valor` y `Acción recomendada del circuito`.
 5. Cerrar con 1 o 2 KPIs de `finance.json`: `Costo operacional estimado`, `OEE` o `Recomendaciones por impacto económico`.
 
 Esta ruta calza con la rúbrica: prototipo funcional y demo en vivo, impacto operativo-económico, innovación por representación de tramos y presentación clara en 5 minutos.
+
+### Dashboards GQM disponibles
+
+| Archivo | UID | Título | Uso recomendado |
+|---|---|---|---|
+| `gqm_comasa_decision_narrative.json` | `gqm-decision-narrative` | `GQM - COMASA Decision Narrative` | Demo compacta principal de 5 minutos. |
+| `gqm_problem_first_operations.json` | `gqm-problem-first-ops` | `GQM - COMASA Problem-First Operations` | Drill-down por tramo, razón, calidad y acción. |
+| `gqm_water_steam_condensate.json` | `gqm-water-steam-cond` | `GQM - COMASA Water Steam Condensate Decisions` | Evidencia TAG y circuito agua-vapor-condensado. |
+| `gqm_boiler_biomass.json` | `gqm-boiler-biomass` | `GQM - COMASA Biomass Boiler Efficiency` | Causa raíz biomasa/caldera/combustión. |
+| `gqm_maintenance.json` | `gqm-maintenance-risk` | `GQM - COMASA Predictive Maintenance Risk` | Riesgo, acciones preventivas y backlog. |
+| `gqm_finance.json` | `gqm-finance-impact` | `GQM - COMASA Executive Financial Impact` | Cierre de OEE, costo e impacto ejecutivo. |
+
+Ver detalle de implementación, mapeo de títulos planificados vs reales, mitigaciones y métricas futuras en `docs/gqm_dashboard_implementation.md`.
 
 ## `problem_first_operations.json` — COMASA - Revision integrada por problema
 
