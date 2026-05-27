@@ -158,6 +158,54 @@ from(bucket: "${bucket}")
 
 - Validated modified dashboard JSON with `python -m json.tool`.
 
+## 2026-05-27: Stable Asset Risk Panels
+
+### Goal
+
+Prevent `asset_risk` stat and bar gauge panels from splitting one equipment into multiple visual values when risk `status`, `severity`, or other tags change.
+
+### Cause
+
+InfluxDB stores each unique tag set as a separate series. `asset_risk` includes tags such as `equipment`, `status`, `severity`, and `probable_anomaly`. If a stat query only used `last()`, Grafana could receive one last value per status-specific series and render multiple stat boxes instead of one value changing color.
+
+### Implemented
+
+- Added `group(columns: ["equipment"])` before `last()` on exact-equipment risk stat panels.
+- Removed `status` from top-risk grouping in the affected bar gauge so each equipment appears once.
+- Kept threshold-based coloring unchanged.
+
+### Affected Panels
+
+- `grafana/dashboards/water_steam_condensate.json` panel `id: 1`, `Riesgo circuito térmico`.
+- `grafana/dashboards/boiler_biomass.json` panel `id: 1`, `Riesgo fouling caldera`.
+- `grafana/dashboards/boiler_biomass.json` panel `id: 2`, `Riesgo calidad biomasa`.
+- `grafana/dashboards/boiler_biomass.json` panel `id: 3`, `Riesgo combustión`.
+- `grafana/dashboards/problem_first_operations.json` panel `id: 10`, `Top riesgos que explican el costo`.
+
+### Query Convention
+
+For a single equipment risk stat:
+
+```flux
+from(bucket: "${bucket}")
+  |> range(start: -5m)
+  |> filter(fn: (r) => r._measurement == "asset_risk" and r.equipment == "CircuitoAguaVaporCondensado" and r._field == "risk_score")
+  |> group(columns: ["equipment"])
+  |> last()
+```
+
+For top-risk bar gauges:
+
+```flux
+from(bucket: "${bucket}")
+  |> range(start: -10m)
+  |> filter(fn: (r) => r._measurement == "asset_risk" and r._field == "risk_score")
+  |> group(columns: ["equipment"])
+  |> last()
+  |> group()
+  |> sort(columns: ["_value"], desc: true)
+```
+
 ## Current Grafana Query Convention
 
 For raw or KPI time-series panels, use this order:
