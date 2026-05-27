@@ -7,6 +7,8 @@ SCENARIOS = {
     "humedad_biomasa_alta",
     "perdida_vapor_condensado",
     "desbalance_turbina",
+    "cavitacion_bomba",
+    "combustion_inestable",
 }
 
 
@@ -44,6 +46,21 @@ def multiplier(scenario: str, variable: str, tick: int) -> float:
             "VibracionFFT1X": 1 + 2.7 * r + 0.15 * math.sin(tick),
             "PotenciaMW": 1 - 0.03 * r,
         }.get(variable, 1.0)
+    if scenario == "cavitacion_bomba":
+        return {
+            "VibracionBombaRMS": 1 + 1.35 * r,
+            "VibracionBombaFFTAlta": 1 + 3.8 * r + 0.25 * math.sin(tick * 1.7),
+            "PresionDescargaBomba": 1 - 0.18 * r,
+            "PotenciaMW": 1 - 0.025 * r,
+        }.get(variable, 1.0)
+    if scenario == "combustion_inestable":
+        return {
+            "CO": 1 + 1.35 * r + 0.12 * math.sin(tick * 0.8),
+            "O2": 1 - 0.28 * r + 0.06 * math.sin(tick * 0.9),
+            "PotenciaMW": 1 - 0.055 * r + 0.015 * math.sin(tick * 0.6),
+            "ConsumoBiomasa": 1 + 0.08 * r,
+            "TemperaturaEscape": 1 + 0.06 * r,
+        }.get(variable, 1.0)
     return 1.0
 
 
@@ -53,4 +70,6 @@ def offset(scenario: str, area: str, tag: str, variable: str, tick: int) -> floa
         return -34.0 * r
     if scenario == "perdida_vapor_condensado" and area in {"AguaIndustrial", "AguaAlimentacion", "AguaDesmineralizada"}:
         return 12.0 * r
+    if scenario == "cavitacion_bomba" and area == "AguaAlimentacion" and tag == "FT_2101-1":
+        return -14.0 * r
     return 0.0
