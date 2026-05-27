@@ -397,6 +397,23 @@ La lógica predictiva no debe quedar después del dashboard. Si el motor de regl
 
 ## 10. Dashboards
 
+### Matriz KPI → visualización → rol
+
+Regla de edición: cada panel debe responder **una sola pregunta** y mantener una unidad o familia semántica compatible. No se deben mezclar `%`, `h`, `$/MWh`, `m3/MWh`, `ton/MWh`, `MW`, `t/h`, `°C`, `mbar` o vibración en un mismo panel salvo que exista una comparación explícita con ejes/etiquetas claras.
+
+| Familia de KPI / indicador | Pregunta que responde | Panel Grafana preferido | Fallback nativo | Roles principales |
+|---|---|---|---|---|
+| Potencia MW, throughput, temperatura, presión, O2, CO, humedad, vibración | ¿Cómo está cambiando? | Time series con umbrales | Stat si solo importa el valor actual | Maestro, Operador |
+| Valor crítico actual: potencia, OEE, condensado %, costo/MWh | ¿Cuál es el valor ahora? | Stat / Gauge | Stat | Maestro, Finanzas, Operador |
+| Costos, pérdidas y componentes de consumo | ¿Qué componente aporta más? | Waterfall | Bar chart / stacked bar / table | Finanzas, Maestro |
+| Comparaciones por equipo o periodo: MTBF, MTTR, detenciones, costo por activo | ¿Qué es peor o mejor? | Bar chart | Table | Finanzas, Mantención, Maestro |
+| Eventos y anomalías en el tiempo | ¿Cuándo ocurrió? | State timeline / status history | Table | Operador, Mantención |
+| Riesgo por equipo, severidad o probabilidad | ¿Dónde se concentra el riesgo? | Heatmap / matrix | Table / bar chart | Mantención, Maestro |
+| Flujos o relaciones causales | ¿Cómo se propaga el impacto? | Sankey / node graph | Table / bar chart | Maestro, Finanzas |
+| Recomendaciones accionables | ¿Qué acción se necesita? | Table / alert list | Table | Operador, Mantención |
+
+Tipos permitidos para el prototipo sin plugins: `stat`, `gauge`, `timeseries`, `barchart`, `state-timeline`, `heatmap` y `table`. Si el tipo ideal requiere plugin —por ejemplo Waterfall, Sankey o matriz avanzada— se debe usar el fallback nativo indicado para mantener el provisioning de Grafana simple y seguro para la demo.
+
 ### Dashboard operacional
 
 | Panel | Tipo | Objetivo |
