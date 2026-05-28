@@ -176,12 +176,16 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "risk_score"
+              "options": "Riesgo"
             },
             "properties": [
               {
                 "id": "unit",
                 "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
               },
               {
                 "id": "custom.cellOptions",
@@ -219,86 +223,16 @@
           {
             "matcher": {
               "id": "byName",
-              "options": "Riesgo"
+              "options": "Plazo min"
             },
             "properties": [
               {
                 "id": "unit",
-                "value": "percent"
+                "value": "min"
               },
               {
                 "id": "decimals",
                 "value": 0
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "mode": "gradient",
-                  "type": "color-background"
-                }
-              },
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": null
-                    },
-                    {
-                      "color": "orange",
-                      "value": 60
-                    },
-                    {
-                      "color": "red",
-                      "value": 80
-                    }
-                  ]
-                }
-              }
-            ]
-          },
-          {
-            "matcher": {
-              "id": "byName",
-              "options": "Probabilidad falla"
-            },
-            "properties": [
-              {
-                "id": "unit",
-                "value": "percent"
-              },
-              {
-                "id": "decimals",
-                "value": 0
-              },
-              {
-                "id": "custom.cellOptions",
-                "value": {
-                  "mode": "gradient",
-                  "type": "color-background"
-                }
-              },
-              {
-                "id": "thresholds",
-                "value": {
-                  "mode": "absolute",
-                  "steps": [
-                    {
-                      "color": "green",
-                      "value": null
-                    },
-                    {
-                      "color": "orange",
-                      "value": 60
-                    },
-                    {
-                      "color": "red",
-                      "value": 80
-                    }
-                  ]
-                }
               }
             ]
           }
@@ -317,7 +251,7 @@
       },
       "targets": [
         {
-          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> sort(columns: [\"_time\"], desc: true) |> unique(column: \"equipment\") |> keep(columns: [\"equipment\", \"area\", \"status\", \"probable_anomaly\", \"risk_score\", \"dominant_signal\", \"suggested_action\", \"due_minutes\", \"expected_impact\"]) |> sort(columns: [\"risk_score\"], desc: true)",
+          "query": "base = from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\")\n\nnumeric = base |> filter(fn: (r) => r._field == \"risk_score\" or r._field == \"due_minutes\") |> group(columns: [\"equipment\", \"area\", \"status\", \"probable_anomaly\", \"_field\"]) |> last() |> group(columns: [\"equipment\", \"area\", \"status\", \"probable_anomaly\"]) |> pivot(rowKey: [\"equipment\", \"area\", \"status\", \"probable_anomaly\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> keep(columns: [\"equipment\", \"area\", \"status\", \"probable_anomaly\", \"risk_score\", \"due_minutes\"])\n\ntext = base |> filter(fn: (r) => r._field == \"dominant_signal\" or r._field == \"risk_reason\" or r._field == \"suggested_action\" or r._field == \"expected_impact\") |> group(columns: [\"equipment\", \"area\", \"status\", \"probable_anomaly\", \"_field\"]) |> last() |> group(columns: [\"equipment\", \"area\", \"status\", \"probable_anomaly\"]) |> pivot(rowKey: [\"equipment\", \"area\", \"status\", \"probable_anomaly\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> keep(columns: [\"equipment\", \"area\", \"status\", \"probable_anomaly\", \"dominant_signal\", \"risk_reason\", \"suggested_action\", \"expected_impact\"])\n\njoin(tables: {numeric: numeric, text: text}, on: [\"equipment\", \"area\", \"status\", \"probable_anomaly\"]) |> group() |> rename(columns: {risk_score: \"Riesgo\", status: \"Estado\", equipment: \"Equipo\", area: \"Area\", probable_anomaly: \"Anomalia probable\", dominant_signal: \"Senal dominante\", risk_reason: \"Causa probable\", suggested_action: \"Accion sugerida\", due_minutes: \"Plazo min\", expected_impact: \"Impacto esperado\"}) |> keep(columns: [\"Riesgo\", \"Estado\", \"Equipo\", \"Area\", \"Anomalia probable\", \"Senal dominante\", \"Causa probable\", \"Accion sugerida\", \"Plazo min\", \"Impacto esperado\"]) |> sort(columns: [\"Riesgo\"], desc: true)",
           "refId": "A"
         }
       ],
@@ -330,24 +264,22 @@
           "options": {
             "excludeByName": {},
             "indexByName": {
-              "risk_score": 0,
-              "probability_failure": 1,
-              "status": 2,
-              "equipment": 3,
-              "area": 4,
-              "probable_cause": 5,
-              "recommended_action": 6,
-              "_time": 7
+              "Equipo": 0,
+              "Riesgo": 1,
+              "Estado": 2,
+              "Plazo min": 3,
+              "Area": 4,
+              "Anomalia probable": 5,
+              "Causa probable": 6,
+              "Accion sugerida": 7,
+              "Impacto esperado": 8,
+              "Senal dominante": 9
             },
             "renameByName": {
-              "risk_score": "Riesgo",
-              "probability_failure": "Probabilidad falla",
-              "status": "Estado",
-              "equipment": "Equipo",
-              "area": "Área",
-              "probable_cause": "Causa probable",
-              "recommended_action": "Acción recomendada",
-              "_time": "Hora"
+              "Area": "Área",
+              "Anomalia probable": "Anomalía probable",
+              "Accion sugerida": "Acción sugerida",
+              "Senal dominante": "Señal dominante"
             }
           }
         }
@@ -491,13 +423,13 @@
           "options": {
             "excludeByName": {},
             "indexByName": {
-              "severity": 0,
-              "equipment": 1,
-              "probable_cause": 2,
-              "suggested_action": 3,
-              "expected_impact": 4,
-              "due_minutes": 5,
-              "ack_status": 6,
+              "equipment": 0,
+              "severity": 1,
+              "due_minutes": 2,
+              "ack_status": 3,
+              "probable_cause": 4,
+              "suggested_action": 5,
+              "expected_impact": 6,
               "_time": 7
             },
             "renameByName": {
