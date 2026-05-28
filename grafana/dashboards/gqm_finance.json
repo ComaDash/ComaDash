@@ -1,0 +1,779 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "panels": [],
+      "title": "Impacto del negocio",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "unit": "MWh"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"energia_generada_mwh_h\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Energía generada: impacto productivo",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre energia generada.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: energia_generada desde kpi; unidad energetica reportada.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "unit": "t/h"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"throughput_biomasa_ton_h\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Throughput biomasa: capacidad usada",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre throughput biomasa.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: throughput_biomasa desde kpi; unidad de proceso reportada.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 82
+              },
+              {
+                "color": "green",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "id": 3,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"oee\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "OEE: salud operacional ejecutiva",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre oee.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: OEE desde kpi; unidad porcentaje.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"costo_operacional_estimado\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Costo operacional: prioridad económica",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre costo operacional estimado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costos operacionales desde kpi; unidad monetaria o tendencia economica segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 101,
+      "panels": [],
+      "title": "Dónde se pierde valor",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 6
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"costo_biomasa_por_mwh\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Costo biomasa por MWh: pérdida de valor",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre costo biomasa por mwh.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costo_biomasa_por_mwh desde kpi; unidad monetaria/MWh.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 6
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"costo_agua_vapor_condensado\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Costo circuito térmico: pérdida agua/vapor",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre costo circuito termico.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costos operacionales desde kpi; unidad monetaria o tendencia economica segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 62
+              },
+              {
+                "color": "green",
+                "value": 72
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 6
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"condensado_recuperado\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Condensado recuperado: recuperación de valor",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre condensado recuperado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: condensado_recuperado desde kpi; unidad porcentaje.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 11
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -2h) |> filter(fn: (r) => r._measurement == \"kpi\" and (r.kpi == \"costo_biomasa_por_mwh\" or r.kpi == \"costo_agua_vapor_condensado\" or r.kpi == \"costo_operacional_estimado\") and r._field == \"value\") |> map(fn: (r) => ({ r with label: if r.kpi == \"costo_biomasa_por_mwh\" then \"Costo biomasa por MWh\" else if r.kpi == \"costo_agua_vapor_condensado\" then \"Costo circuito térmico\" else if r.kpi == \"costo_operacional_estimado\" then \"Costo operacional estimado\" else r.kpi })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 30s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Tendencia de costos: ¿dónde crece el impacto?",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre tendencia de costos.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costos operacionales desde kpi; unidad monetaria o tendencia economica segun query del panel. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 11
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and (r.kpi == \"costo_biomasa_por_mwh\" or r.kpi == \"costo_agua_vapor_condensado\") and r._field == \"value\") |> last() |> map(fn: (r) => ({ r with label: if r.kpi == \"costo_biomasa_por_mwh\" then \"Costo biomasa por MWh\" else if r.kpi == \"costo_agua_vapor_condensado\" then \"Costo circuito térmico\" else if r.kpi == \"costo_operacional_estimado\" then \"Costo operacional estimado\" else r.kpi })) |> group(columns: [\"label\", \"unit\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Composición de costos: foco económico actual",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre composicion de costos actual.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costos operacionales desde kpi; unidad monetaria o tendencia economica segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "barchart"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 102,
+      "panels": [],
+      "title": "Decisiones para jefatura",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Plazo min"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "min"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "green",
+                      "value": 180
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      },
+      "id": 10,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -12h) |> filter(fn: (r) => r._measurement == \"maintenance_recommendation\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> keep(columns: [\"_time\", \"equipment\", \"severity\", \"probable_cause\", \"expected_impact\", \"impacted_kpis\", \"suggested_action\", \"due_minutes\", \"ack_status\"]) |> sort(columns: [\"due_minutes\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Recomendaciones económicas: impacto, causa y acción",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre recomendaciones por impacto economico.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; prioridad, accion, impacto esperado y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "severity": 0,
+              "expected_impact": 1,
+              "impacted_kpis": 2,
+              "probable_cause": 3,
+              "suggested_action": 4,
+              "due_minutes": 5,
+              "ack_status": 6,
+              "equipment": 7,
+              "_time": 8
+            },
+            "renameByName": {
+              "severity": "Severidad",
+              "expected_impact": "Impacto esperado",
+              "impacted_kpis": "KPIs impactados",
+              "probable_cause": "Causa probable",
+              "suggested_action": "Acción sugerida",
+              "due_minutes": "Plazo min",
+              "ack_status": "Estado ack",
+              "equipment": "Equipo",
+              "_time": "Hora"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 35
+              },
+              {
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "id": 11,
+      "options": {
+        "displayMode": "gradient",
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "left",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "valueMode": "color"
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\" and r._field == \"risk_score\") |> group(columns: [\"equipment\"]) |> last() |> keep(columns: [\"equipment\", \"_value\"]) |> pivot(rowKey: [], columnKey: [\"equipment\"], valueColumn: \"_value\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Riesgo operacional por equipo con impacto de negocio",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo que puede impactar el negocio.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "bargauge"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
+      "id": 103,
+      "panels": [],
+      "title": "Confiabilidad",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "h",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 27
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and (r.kpi == \"mtbf_horas_demo\" or r.kpi == \"mttr_horas_demo\" or r.kpi == \"horas_detencion_no_programada\") and r._field == \"value\") |> last() |> map(fn: (r) => ({ r with label: if r.kpi == \"mtbf_horas_demo\" then \"MTBF demo\" else if r.kpi == \"mttr_horas_demo\" then \"MTTR demo\" else if r.kpi == \"horas_detencion_no_programada\" then \"Detención no programada\" else r.kpi })) |> group(columns: [\"label\", \"unit\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Confiabilidad económica: MTBF/MTTR/detención",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre mtbf mttr y detencion no programada.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: kpi/asset_risk segun query del panel; unidad operacional reportada. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 27
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -2h) |> filter(fn: (r) => r._measurement == \"kpi\" and (r.kpi == \"oee\" or r.kpi == \"condensado_recuperado\") and r._field == \"value\") |> map(fn: (r) => ({ r with label: if r.kpi == \"oee\" then \"OEE\" else if r.kpi == \"condensado_recuperado\" then \"Condensado recuperado\" else r.kpi })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 30s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "OEE y condensado: eficiencia global recuperable",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre eficiencia global y recuperacion.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: kpi/asset_risk segun query del panel; unidad operacional reportada. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 39,
+  "tags": [
+    "COMASA",
+    "finanzas",
+    "jefatura",
+    "GQM",
+    "impacto"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "comasa",
+          "value": "comasa"
+        },
+        "hide": 2,
+        "label": "Bucket",
+        "name": "bucket",
+        "query": "comasa",
+        "type": "constant"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-2h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "GQM - COMASA Executive Financial Impact",
+  "uid": "gqm-finance-impact",
+  "version": 2,
+  "weekStart": ""
+}

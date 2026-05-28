@@ -1,0 +1,718 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "panels": [],
+      "title": "¿La caldera o la biomasa están bajando el rendimiento?",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 35
+              },
+              {
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\" and r.equipment == \"CalderaBiomasa01\" and r._field == \"risk_score\") |> group(columns: [\"equipment\"]) |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Riesgo de fouling: ¿intervenir caldera?",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo fouling caldera.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 35
+              },
+              {
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\" and r.equipment == \"SistemaBiomasa\" and r._field == \"risk_score\") |> group(columns: [\"equipment\"]) |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Riesgo de biomasa húmeda: ¿ajustar combustible?",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo calidad biomasa.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 35
+              },
+              {
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\" and r.equipment == \"CombustionCaldera\" and r._field == \"risk_score\") |> group(columns: [\"equipment\"]) |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Riesgo de combustión: ¿estabilizar aire/CO?",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo combustion.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"costo_biomasa_por_mwh\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Costo de biomasa: impacto por MWh",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre costo biomasa por mwh.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costo_biomasa_por_mwh desde kpi; unidad monetaria/MWh.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 101,
+      "panels": [],
+      "title": "Evidencia técnica",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "displayName": "${__field.labels.label} (${__field.labels.unit})",
+          "unit": "short",
+          "custom": {
+            "axisLabel": "Unidades mixtas — señal temprana de fouling"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and (r.variable == \"TemperaturaEscape\" or r.variable == \"PresionDiferencial\") and r._field == \"value\") |> map(fn: (r) => ({ r with label: if r.variable == \"TemperaturaEscape\" then \"Temperatura escape\" else if r.variable == \"PresionDiferencial\" then \"Presión diferencial\" else r.variable })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Fouling caldera: escape y presión diferencial",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre fouling temperatura escape presion diferencial.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})",
+          "custom": {
+            "axisLabel": "Unidades mixtas — eficiencia operacional"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and (r.variable == \"PotenciaMW\" or r.variable == \"ConsumoBiomasa\") and r._field == \"value\") |> map(fn: (r) => ({ r with label: if r.variable == \"PotenciaMW\" then \"Potencia MW\" else if r.variable == \"ConsumoBiomasa\" then \"Consumo biomasa\" else r.variable })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Potencia vs consumo de biomasa",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre potencia generada vs consumo de biomasa.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})",
+          "custom": {
+            "axisLabel": "Unidades mixtas — relación causal"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "id": 7,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and r.variable == \"HumedadBiomasa\" and r._field == \"value\") |> map(fn: (r) => ({ r with label: \"Humedad biomasa\" })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        },
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"energia_por_ton_biomasa\" and r._field == \"value\") |> map(fn: (r) => ({ r with label: \"Energía por tonelada\" })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "B"
+        }
+      ],
+      "title": "Humedad biomasa vs energía por tonelada",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre humedad biomasa vs energia por tonelada.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "displayName": "${__field.labels.label} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 13
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and (r.variable == \"CO\" or r.variable == \"O2\") and r._field == \"value\") |> map(fn: (r) => ({ r with label: if r.variable == \"CO\" then \"CO\" else if r.variable == \"O2\" then \"O₂\" else r.variable })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Combustión: balance CO/O2 para decisión",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre combustion co y o2.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw/kpi segun query del panel; TAG, unidad y calidad cuando estan disponibles. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "id": 102,
+      "panels": [],
+      "title": "Eventos y decisión",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Score"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 21
+      },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -12h) |> filter(fn: (r) => r._measurement == \"anomaly_event\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> filter(fn: (r) => r.type == \"fouling_caldera\" or r.type == \"humedad_biomasa_alta\" or r.type == \"combustion_inestable\") |> keep(columns: [\"_time\", \"equipment\", \"severity\", \"type\", \"score\", \"message\", \"probable_cause\"]) |> sort(columns: [\"_time\"], desc: true)",
+          "refId": "A"
+        }
+      ],
+      "title": "Eventos caldera/biomasa: causa e impacto",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre eventos caldera biomasa.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: anomaly_event; tiempo, equipo, severidad y causa probable.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "severity": 0,
+              "score": 1,
+              "equipment": 2,
+              "type": 3,
+              "probable_cause": 4,
+              "impacted_kpis": 5,
+              "message": 6,
+              "_time": 7
+            },
+            "renameByName": {
+              "severity": "Severidad",
+              "score": "Score",
+              "equipment": "Equipo",
+              "type": "Tipo evento",
+              "probable_cause": "Causa probable",
+              "impacted_kpis": "KPIs impactados",
+              "message": "Mensaje",
+              "_time": "Hora"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Plazo min"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "min"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "green",
+                      "value": 180
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 21
+      },
+      "id": 10,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -12h) |> filter(fn: (r) => r._measurement == \"maintenance_recommendation\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> filter(fn: (r) => r.equipment == \"CalderaBiomasa01\" or r.equipment == \"SistemaBiomasa\" or r.equipment == \"CombustionCaldera\") |> keep(columns: [\"_time\", \"equipment\", \"severity\", \"probable_cause\", \"suggested_action\", \"expected_impact\", \"due_minutes\", \"ack_status\"]) |> sort(columns: [\"due_minutes\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Recomendación caldera/biomasa: causa, acción y plazo",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre recomendacion asociada.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; prioridad, accion, impacto esperado y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "severity": 0,
+              "equipment": 1,
+              "probable_cause": 2,
+              "suggested_action": 3,
+              "expected_impact": 4,
+              "due_minutes": 5,
+              "ack_status": 6,
+              "_time": 7
+            },
+            "renameByName": {
+              "severity": "Severidad",
+              "equipment": "Equipo",
+              "probable_cause": "Causa probable",
+              "suggested_action": "Acción sugerida",
+              "expected_impact": "Impacto esperado",
+              "due_minutes": "Plazo min",
+              "ack_status": "Estado ack",
+              "_time": "Hora"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": [
+    "COMASA",
+    "caldera",
+    "biomasa",
+    "GQM",
+    "eficiencia"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "comasa",
+          "value": "comasa"
+        },
+        "hide": 2,
+        "label": "Bucket",
+        "name": "bucket",
+        "query": "comasa",
+        "type": "constant"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "GQM - COMASA Biomass Boiler Efficiency",
+  "uid": "gqm-boiler-biomass",
+  "version": 1,
+  "weekStart": ""
+}
