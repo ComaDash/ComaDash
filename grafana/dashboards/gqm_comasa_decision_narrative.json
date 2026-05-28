@@ -26,69 +26,6 @@
         "type": "influxdb",
         "uid": "influxdb-comasa"
       },
-      "description": "Goal:\nPriorizar el tramo operacional COMASA con mayor riesgo actual.\nQuestion:\n¿Qué tramo requiere atención primero en los próximos 10 segundos de diagnóstico?\nMetric:\nsegment_status.risk_score con status, reason, tag, unit, quality y confidence cuando existe; Fuente: segment_status; Unidad: score de riesgo.\nDecision:\nSeleccionar el tramo crítico que debe revisar el turno antes de navegar dashboards grandes.\nAction:\nValidar TAG/calidad y ejecutar la recomendación vinculada al tramo con mayor risk_score.",
-      "fieldConfig": {
-        "defaults": {
-          "decimals": 0,
-          "displayName": "Risk score tramo crítico",
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "orange",
-                "value": 60
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          },
-          "unit": "percent"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 8,
-        "x": 0,
-        "y": 1
-      },
-      "id": 1,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "center",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": [
-            "lastNotNull"
-          ],
-          "fields": "",
-          "values": false
-        },
-        "showPercentChange": false,
-        "textMode": "auto",
-        "wideLayout": true
-      },
-      "targets": [
-        {
-          "query": "from(bucket: \"${bucket}\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == \"segment_status\") |> pivot(rowKey: [\"_time\", \"segment_id\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"unit\", \"quality\", \"status\", \"impacted_problem\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> sort(columns: [\"_time\"], desc: true) |> unique(column: \"segment_id\") |> group() |> sort(columns: [\"risk_score\"], desc: true) |> limit(n: 1) |> keep(columns: [\"risk_score\"])",
-          "refId": "A"
-        }
-      ],
-      "title": "Tramo crítico ahora",
-      "type": "stat"
-    },
-    {
-      "datasource": {
-        "type": "influxdb",
-        "uid": "influxdb-comasa"
-      },
       "description": "Goal:\nOrdenar los tramos COMASA por riesgo, causa, calidad de dato y acción recomendada.\nQuestion:\n¿Cuál es el ranking GQM de tramos y qué evidencia justifica actuar?\nMetric:\nsegment_status: risk_score, status, reason, quality, confidence, tag, unit, recommendation_link y cost_efficiency_impact.\nDecision:\nPriorizar inspección/intervención sobre el tramo de mayor riesgo con evidencia trazable.\nAction:\nAsignar responsable, confirmar TAG/unidad/calidad y seguir la recomendación operacional asociada.",
       "fieldConfig": {
         "defaults": {
@@ -250,8 +187,8 @@
       },
       "gridPos": {
         "h": 7,
-        "w": 16,
-        "x": 8,
+        "w": 24,
+        "x": 0,
         "y": 1
       },
       "id": 2,
@@ -370,7 +307,6 @@
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
-          "displayName": "Costo circuito térmico",
           "unit": "currencyUSD"
         },
         "overrides": []
@@ -395,7 +331,7 @@
           "values": false
         },
         "showPercentChange": false,
-        "textMode": "auto",
+        "textMode": "value",
         "wideLayout": true
       },
       "targets": [
@@ -607,7 +543,6 @@
       "fieldConfig": {
         "defaults": {
           "decimals": 1,
-          "displayName": "Energía generada",
           "unit": "MWh"
         },
         "overrides": []
@@ -632,7 +567,7 @@
           "values": false
         },
         "showPercentChange": false,
-        "textMode": "auto",
+        "textMode": "value",
         "wideLayout": true
       },
       "targets": [
@@ -712,7 +647,6 @@
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
-          "displayName": "Costo operacional",
           "unit": "currencyUSD"
         },
         "overrides": []
@@ -737,7 +671,7 @@
           "values": false
         },
         "showPercentChange": false,
-        "textMode": "auto",
+        "textMode": "value",
         "wideLayout": true
       },
       "targets": [

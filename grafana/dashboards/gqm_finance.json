@@ -29,7 +29,6 @@
       "fieldConfig": {
         "defaults": {
           "decimals": 1,
-          "displayName": "Energía generada",
           "unit": "MWh"
         },
         "overrides": []
@@ -54,7 +53,7 @@
           "values": false
         },
         "showPercentChange": false,
-        "textMode": "auto",
+        "textMode": "value",
         "wideLayout": true
       },
       "targets": [
@@ -75,7 +74,6 @@
       "fieldConfig": {
         "defaults": {
           "decimals": 1,
-          "displayName": "Throughput biomasa",
           "unit": "t/h"
         },
         "overrides": []
@@ -100,7 +98,7 @@
           "values": false
         },
         "showPercentChange": false,
-        "textMode": "auto",
+        "textMode": "value",
         "wideLayout": true
       },
       "targets": [
@@ -180,7 +178,6 @@
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
-          "displayName": "Costo operacional estimado",
           "unit": "currencyUSD"
         },
         "overrides": []
@@ -205,7 +202,7 @@
           "values": false
         },
         "showPercentChange": false,
-        "textMode": "auto",
+        "textMode": "value",
         "wideLayout": true
       },
       "targets": [
@@ -239,7 +236,6 @@
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
-          "displayName": "Costo biomasa por MWh",
           "unit": "currencyUSD"
         },
         "overrides": []
@@ -264,7 +260,7 @@
           "values": false
         },
         "showPercentChange": false,
-        "textMode": "auto",
+        "textMode": "value",
         "wideLayout": true
       },
       "targets": [
@@ -285,7 +281,6 @@
       "fieldConfig": {
         "defaults": {
           "decimals": 0,
-          "displayName": "Costo circuito térmico",
           "unit": "currencyUSD"
         },
         "overrides": []
@@ -310,7 +305,7 @@
           "values": false
         },
         "showPercentChange": false,
-        "textMode": "auto",
+        "textMode": "value",
         "wideLayout": true
       },
       "targets": [
@@ -371,7 +366,7 @@
           "values": false
         },
         "showPercentChange": false,
-        "textMode": "auto",
+        "textMode": "value",
         "wideLayout": true
       },
       "targets": [
@@ -617,8 +612,7 @@
               }
             ]
           },
-          "unit": "percent",
-          "displayName": "${__field.labels.equipment}"
+          "unit": "percent"
         },
         "overrides": []
       },
@@ -649,11 +643,11 @@
       },
       "targets": [
         {
-          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\" and r._field == \"risk_score\") |> group(columns: [\"equipment\"]) |> last() |> group() |> sort(columns: [\"_value\"], desc: true)",
+          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\" and r._field == \"risk_score\") |> group(columns: [\"equipment\"]) |> last() |> keep(columns: [\"equipment\", \"_value\"]) |> pivot(rowKey: [], columnKey: [\"equipment\"], valueColumn: \"_value\")",
           "refId": "A"
         }
       ],
-      "title": "Riesgo operacional con impacto de negocio",
+      "title": "Riesgo operacional por equipo con impacto de negocio",
       "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo que puede impactar el negocio.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
       "type": "bargauge"
     },
