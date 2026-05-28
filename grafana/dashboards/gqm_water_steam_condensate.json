@@ -1,0 +1,727 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "panels": [],
+      "title": "¿El circuito agua-vapor-condensado está perdiendo eficiencia?",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 35
+              },
+              {
+                "color": "orange",
+                "value": 65
+              },
+              {
+                "color": "red",
+                "value": 85
+              }
+            ]
+          },
+          "unit": "percent",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 1
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"asset_risk\" and r.equipment == \"CircuitoAguaVaporCondensado\" and r._field == \"risk_score\") |> group(columns: [\"equipment\"]) |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Riesgo actual del circuito térmico",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre riesgo circuito termico.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: risk_score/status/reason desde asset_risk o segment_status; unidad porcentaje/riesgo segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "m3/MWh",
+          "decimals": 2
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"agua_por_mwh\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Consumo específico de agua por MWh",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre agua por mwh.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: agua_por_mwh desde kpi; unidad m3/MWh.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "t/MWh",
+          "decimals": 2
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 1
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"vapor_por_mwh\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Consumo específico de vapor por MWh",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre vapor por mwh.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: vapor_por_mwh desde kpi; unidad t/MWh.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 62
+              },
+              {
+                "color": "green",
+                "value": 72
+              }
+            ]
+          },
+          "unit": "percent",
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"condensado_recuperado\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Recuperación de condensado: condición actual",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre condensado recuperado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: condensado_recuperado desde kpi; unidad porcentaje.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 101,
+      "panels": [],
+      "title": "Balance operativo del circuito",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "t/h",
+          "displayName": "${__field.labels.tag} ${__field.labels.variable} (${__field.labels.unit})"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 6
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and (r.tag == \"FT_5101-1\" or r.tag == \"FT_3001\") and r.variable == \"Flujo\" and r._field == \"value\") |> group(columns: [\"tag\", \"variable\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Balance vapor-condensado por TAG",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre vapor ft 5101 1 vs condensado ft 3001.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: metricas consultadas por la query del panel; unidad segun serie. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "displayName": "${__field.labels.kpi} (${__field.labels.unit})",
+          "custom": {
+            "axisLabel": "Unidades mixtas — tendencia causal, no suma directa"
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 6
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"kpi\" and (r.kpi == \"agua_por_mwh\" or r.kpi == \"vapor_por_mwh\" or r.kpi == \"condensado_recuperado\") and r._field == \"value\") |> group(columns: [\"kpi\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Eficiencia del circuito: agua, vapor y condensado",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre eficiencia agua vapor y condensado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: kpi/asset_risk segun query del panel; unidad operacional reportada. Valores mostrados como relacion causal/tendencia, no comparacion directa de unidades.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyUSD",
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"costo_agua_vapor_condensado\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Costo actual del circuito agua/vapor",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre costo agua vapor condensado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: costos operacionales desde kpi; unidad monetaria o tendencia economica segun query del panel.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "id": 103,
+      "panels": [],
+      "title": "Pérdida de vapor/condensado y acción",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Score"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      },
+      "id": 10,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -12h) |> filter(fn: (r) => r._measurement == \"anomaly_event\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> filter(fn: (r) => r.type == \"perdida_vapor_condensado\") |> keep(columns: [\"_time\", \"equipment\", \"severity\", \"score\", \"message\", \"probable_cause\", \"impacted_kpis\"]) |> sort(columns: [\"_time\"], desc: true)",
+          "refId": "A"
+        }
+      ],
+      "title": "Evento de pérdida: severidad, causa e impacto",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre evento perdida vapor condensado.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: anomaly_event; tiempo, equipo, severidad y causa probable.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "severity": 0,
+              "score": 1,
+              "equipment": 2,
+              "probable_cause": 3,
+              "impacted_kpis": 4,
+              "message": 5,
+              "_time": 6
+            },
+            "renameByName": {
+              "severity": "Severidad",
+              "score": "Score",
+              "equipment": "Equipo",
+              "probable_cause": "Causa probable",
+              "impacted_kpis": "KPIs impactados",
+              "message": "Mensaje",
+              "_time": "Hora"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Plazo min"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "min"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "green",
+                      "value": 180
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "id": 11,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -12h) |> filter(fn: (r) => r._measurement == \"maintenance_recommendation\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> filter(fn: (r) => r.equipment == \"CircuitoAguaVaporCondensado\") |> keep(columns: [\"_time\", \"equipment\", \"severity\", \"probable_cause\", \"suggested_action\", \"expected_impact\", \"due_minutes\", \"ack_status\"]) |> sort(columns: [\"due_minutes\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Acción del circuito: causa, impacto y vencimiento",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre accion recomendada del circuito.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: maintenance_recommendation; prioridad, accion, impacto esperado y estado.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "severity": 0,
+              "probable_cause": 1,
+              "suggested_action": 2,
+              "expected_impact": 3,
+              "due_minutes": 4,
+              "ack_status": 5,
+              "equipment": 6,
+              "_time": 7
+            },
+            "renameByName": {
+              "severity": "Severidad",
+              "probable_cause": "Causa probable",
+              "suggested_action": "Acción sugerida",
+              "expected_impact": "Impacto esperado",
+              "due_minutes": "Plazo min",
+              "ack_status": "Estado ack",
+              "equipment": "Equipo",
+              "_time": "Hora"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
+      "id": 102,
+      "panels": [],
+      "title": "Trazabilidad por TAG",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -5m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and (r.area == \"AguaIndustrial\" or r.area == \"AguaAlimentacion\" or r.area == \"AguaDesmineralizada\" or r.area == \"VaporSobrecalentado\" or r.area == \"Condensado\") and r._field == \"value\") |> group(columns: [\"area\", \"equipment\", \"tag\", \"variable\", \"unit\", \"quality\"]) |> last() |> group() |> keep(columns: [\"area\", \"equipment\", \"tag\", \"variable\", \"unit\", \"quality\", \"_value\", \"_time\"]) |> sort(columns: [\"area\", \"tag\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Trazabilidad operacional por TAG y calidad",
+      "description": "Goal: convertir la evidencia del panel en una decision COMASA sobre tabla operacional por tag area equipo medicion unidad y valor.\nQuestion: Que indica este panel y que debe priorizar el turno o jefatura?\nMetric: telemetry_raw; area, equipo, medicion, unidad, valor y calidad.\nDecision: priorizar la intervencion cuando la tendencia, riesgo o costo supere el umbral operacional.\nAction: validar calidad/TAG, asignar responsable y ejecutar la accion recomendada sin asumir plugins ni ML productivo.",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "area": 0,
+              "equipment": 1,
+              "tag": 2,
+              "variable": 3,
+              "_value": 4,
+              "unit": 5,
+              "quality": 6,
+              "_time": 7
+            },
+            "renameByName": {
+              "area": "Área",
+              "equipment": "Equipo",
+              "tag": "TAG",
+              "variable": "Medición",
+              "_value": "Valor actual",
+              "unit": "Unidad",
+              "quality": "Calidad",
+              "_time": "Hora"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": [
+    "COMASA",
+    "agua",
+    "vapor",
+    "condensado",
+    "GQM"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "comasa",
+          "value": "comasa"
+        },
+        "hide": 2,
+        "label": "Bucket",
+        "name": "bucket",
+        "query": "comasa",
+        "type": "constant"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "GQM - COMASA Water Steam Condensate Decisions",
+  "uid": "gqm-water-steam-cond",
+  "version": 1,
+  "weekStart": ""
+}

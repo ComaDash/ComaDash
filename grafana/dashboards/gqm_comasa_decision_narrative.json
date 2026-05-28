@@ -1,0 +1,720 @@
+{
+  "annotations": {
+    "list": []
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 100,
+      "panels": [],
+      "title": "GQM 1 — Diagnóstico en 10 segundos",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "description": "Goal:\nOrdenar los tramos COMASA por riesgo, causa, calidad de dato y acción recomendada.\nQuestion:\n¿Cuál es el ranking GQM de tramos y qué evidencia justifica actuar?\nMetric:\nsegment_status: risk_score, status, reason, quality, confidence, tag, unit, recommendation_link y cost_efficiency_impact.\nDecision:\nPriorizar inspección/intervención sobre el tramo de mayor riesgo con evidencia trazable.\nAction:\nAsignar responsable, confirmar TAG/unidad/calidad y seguir la recomendación operacional asociada.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "risk_score"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "confidence"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Riesgo"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "red",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Confianza"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "green",
+                      "value": 80
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -10m) |> filter(fn: (r) => r._measurement == \"segment_status\") |> pivot(rowKey: [\"_time\", \"segment_id\", \"from_node\", \"to_node\", \"fluid\", \"tag\", \"unit\", \"quality\", \"status\", \"impacted_problem\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> sort(columns: [\"_time\"], desc: true) |> unique(column: \"segment_id\") |> group() |> keep(columns: [\"risk_score\", \"status\", \"reason\", \"recommendation_link\", \"cost_efficiency_impact\", \"quality\", \"confidence\", \"tag\", \"unit\", \"from_node\", \"to_node\", \"fluid\", \"value\"]) |> sort(columns: [\"risk_score\"], desc: true)",
+          "refId": "A"
+        }
+      ],
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "value": true
+            },
+            "indexByName": {
+              "risk_score": 0,
+              "status": 1,
+              "reason": 2,
+              "recommendation_link": 3,
+              "cost_efficiency_impact": 4,
+              "quality": 5,
+              "confidence": 6,
+              "tag": 7,
+              "unit": 8,
+              "from_node": 9,
+              "to_node": 10,
+              "fluid": 11
+            },
+            "renameByName": {
+              "risk_score": "Riesgo",
+              "status": "Estado",
+              "reason": "Causa",
+              "recommendation_link": "Acción",
+              "cost_efficiency_impact": "Impacto",
+              "quality": "Calidad",
+              "confidence": "Confianza",
+              "tag": "TAG",
+              "unit": "Unidad",
+              "from_node": "Desde",
+              "to_node": "Hasta",
+              "fluid": "Fluido"
+            }
+          }
+        }
+      ],
+      "title": "Ranking GQM de tramos: causa, calidad y acción",
+      "type": "table"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "id": 101,
+      "panels": [],
+      "title": "GQM 2 — Evidencia del circuito térmico",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "description": "Goal:\nAnalizar el circuito agua-vapor-condensado para detectar degradación térmica y recuperación insuficiente.\nQuestion:\n¿La eficiencia del circuito confirma pérdida de agua, vapor o condensado recuperado?\nMetric:\ncondensado_recuperado, agua_por_mwh y vapor_por_mwh desde kpi; Unidad: mixta causal, no comparación homogénea.\nDecision:\nDeterminar si el circuito térmico explica el costo o pérdida operacional observada.\nAction:\nRevisar tramos, purgas, recuperación de condensado y calidad de medición antes de ajustar operación.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "axisLabel": "Unidades mixtas — relación causal"
+          },
+          "displayName": "${__field.labels.kpi} (${__field.labels.unit})",
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 16,
+        "x": 0,
+        "y": 9
+      },
+      "id": 3,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"kpi\" and (r.kpi == \"condensado_recuperado\" or r.kpi == \"agua_por_mwh\" or r.kpi == \"vapor_por_mwh\") and r._field == \"value\") |> group(columns: [\"kpi\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Eficiencia agua-vapor-condensado",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "description": "Goal:\nCuantificar el costo actual del circuito térmico COMASA.\nQuestion:\n¿Cuánto impacta en costo la condición agua-vapor-condensado?\nMetric:\ncosto_agua_vapor_condensado desde kpi.value; Unidad: currencyUSD/demo_currency según fuente.\nDecision:\nEscalar la decisión si el costo térmico sostiene el caso económico.\nAction:\nPriorizar revisión del circuito y registrar impacto económico para jefatura.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 9
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"costo_agua_vapor_condensado\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Costo del circuito térmico",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 102,
+      "panels": [],
+      "title": "GQM 3 — Biomasa, eficiencia y generación",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "description": "Goal:\nRelacionar humedad de biomasa, consumo y potencia generada para explicar variabilidad operacional.\nQuestion:\n¿La biomasa húmeda aumenta consumo o reduce MW generados?\nMetric:\nHumedadBiomasa, ConsumoBiomasa y PotenciaMW desde telemetry_raw.value; Unidad: mixta causal, no comparación directa de magnitudes.\nDecision:\nDecidir si conviene ajustar mezcla, alimentación o combustión antes de culpar solo a generación.\nAction:\nValidar humedad/consumo con el turno y revisar setpoints de alimentación y combustión.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "axisLabel": "Unidades mixtas — relación causal"
+          },
+          "displayName": "${__field.labels.label} (${__field.labels.unit})",
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -30m) |> filter(fn: (r) => r._measurement == \"telemetry_raw\" and (r.variable == \"HumedadBiomasa\" or r.variable == \"ConsumoBiomasa\" or r.variable == \"PotenciaMW\") and r._field == \"value\") |> map(fn: (r) => ({ r with label: if r.variable == \"HumedadBiomasa\" then \"Humedad biomasa\" else if r.variable == \"ConsumoBiomasa\" then \"Consumo biomasa\" else if r.variable == \"PotenciaMW\" then \"Potencia MW\" else r.variable })) |> group(columns: [\"label\", \"unit\"]) |> aggregateWindow(every: 10s, fn: mean, createEmpty: false)",
+          "refId": "A"
+        }
+      ],
+      "title": "Biomasa húmeda: consumo y MW",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 103,
+      "panels": [],
+      "title": "GQM 4 — Acción y mantenimiento preventivo",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "description": "Goal:\nConvertir evidencia operacional en acciones preventivas priorizadas por impacto.\nQuestion:\n¿Qué acción recomendada reduce antes el riesgo o costo de COMASA?\nMetric:\nmaintenance_recommendation: equipment, severity, probable_cause, suggested_action, expected_impact, due_minutes y ack_status.\nDecision:\nElegir la intervención preventiva de mayor impacto y menor plazo.\nAction:\nAsignar responsable, confirmar estado ack_status y ejecutar o reprogramar según due_minutes/impacto.",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Plazo min"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "min"
+              },
+              {
+                "id": "decimals",
+                "value": 0
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "gradient",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "red",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 60
+                    },
+                    {
+                      "color": "green",
+                      "value": 180
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -12h) |> filter(fn: (r) => r._measurement == \"maintenance_recommendation\") |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\") |> keep(columns: [\"_time\", \"equipment\", \"severity\", \"probable_cause\", \"suggested_action\", \"expected_impact\", \"due_minutes\", \"ack_status\"]) |> sort(columns: [\"_time\"], desc: true) |> limit(n: 8)",
+          "refId": "A"
+        }
+      ],
+      "title": "Acciones recomendadas: causa, impacto y plazo",
+      "type": "table",
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "indexByName": {
+              "severity": 0,
+              "equipment": 1,
+              "probable_cause": 2,
+              "suggested_action": 3,
+              "expected_impact": 4,
+              "due_minutes": 5,
+              "ack_status": 6,
+              "_time": 7
+            },
+            "renameByName": {
+              "severity": "Severidad",
+              "equipment": "Equipo",
+              "probable_cause": "Causa probable",
+              "suggested_action": "Acción sugerida",
+              "expected_impact": "Impacto esperado",
+              "due_minutes": "Plazo min",
+              "ack_status": "Estado ack",
+              "_time": "Hora"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 104,
+      "panels": [],
+      "title": "GQM 5 — Cierre ejecutivo",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "description": "Goal:\nMostrar si la operación sostiene generación útil para COMASA.\nQuestion:\n¿Cuánta energía se está generando ahora como resultado del estado operacional?\nMetric:\nenergia_generada_mwh_h desde kpi.value; Unidad: MWh/h.\nDecision:\nConfirmar si el diagnóstico operativo tiene impacto visible en generación.\nAction:\nUsar la tendencia para contextualizar la decisión ejecutiva y no aislar costo sin producción.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 1,
+          "unit": "MWh"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 32
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"energia_generada_mwh_h\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Energía generada",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "description": "Goal:\nResumir la eficiencia operacional global para decisión ejecutiva.\nQuestion:\n¿La planta opera en un nivel de OEE aceptable frente al riesgo detectado?\nMetric:\noee desde kpi.value; Unidad: porcentaje.\nDecision:\nDeterminar si la situación requiere escalamiento operativo o seguimiento normal.\nAction:\nComparar OEE contra umbrales y vincular la caída con tramos, biomasa y acciones pendientes.",
+      "fieldConfig": {
+        "defaults": {
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 82
+              },
+              {
+                "color": "green",
+                "value": 90
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 32
+      },
+      "id": 8,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"oee\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "OEE",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "influxdb-comasa"
+      },
+      "description": "Goal:\nCerrar la narrativa con el costo operacional estimado disponible para COMASA.\nQuestion:\n¿Cuál es el costo operacional estimado que acompaña la decisión?\nMetric:\ncosto_operacional_estimado desde kpi.value; Unidad: currencyUSD/demo_currency según fuente existente.\nDecision:\nDefinir si la acción recomendada tiene prioridad económica inmediata.\nAction:\nUsar el costo junto con riesgo/OEE para justificar intervención, seguimiento o escalamiento ejecutivo.",
+      "fieldConfig": {
+        "defaults": {
+          "decimals": 0,
+          "unit": "currencyUSD"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 32
+      },
+      "id": 9,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "targets": [
+        {
+          "query": "from(bucket: \"${bucket}\") |> range(start: -6h) |> filter(fn: (r) => r._measurement == \"kpi\" and r.kpi == \"costo_operacional_estimado\" and r._field == \"value\") |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Costo operacional estimado",
+      "type": "stat"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 39,
+  "tags": [
+    "COMASA",
+    "GQM",
+    "narrativa",
+    "pitch",
+    "decision"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "comasa",
+          "value": "comasa"
+        },
+        "hide": 2,
+        "label": "Bucket",
+        "name": "bucket",
+        "query": "comasa",
+        "type": "constant"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timezone": "browser",
+  "title": "GQM - COMASA Decision Narrative",
+  "uid": "gqm-decision-narrative",
+  "version": 1,
+  "weekStart": ""
+}
